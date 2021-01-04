@@ -1,5 +1,5 @@
 # Ultimates
-[![Build Status](https://travis-ci.com/kNoAPP/Ults.svg?branch=master)](https://travis-ci.com/kNoAPP/Ults)
+[![Build Status](https://travis-ci.com/kNoAPP/Ultimates.svg?branch=master)](https://travis-ci.com/kNoAPP/Ultimates)
 
 Collectable cards for Minecraft survival. This repository is a fork of kNoAPP's Ultimates.
 
