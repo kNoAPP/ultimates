@@ -1,0 +1,23 @@
+# (GMT) Hour-Day-Week [(0-23)-(1-7)-(1-5)]
+# Weeks start on Sunday in the US
+# Can schedule hourly missions at any time.
+# Can schedule daily missions when hour is 0.
+# Can schedule weekly missions when hour is 0 and day is 1.
+Defaults:
+  NumberOfRandomMissions:
+    - hourly: 1
+    - daily: 2
+    - weekly: 2
+MissionSchedule:
+  - 0-1-6:
+    Missions:
+      - break-stone:
+        MaxProgress: 50
+        Frequency: hourly
+      - kill-creepers:
+        MaxProgress: 4
+        Frequency: daily
+      - defeat-wither:
+        MaxProgress: 1
+        Frequency: weekly
+
