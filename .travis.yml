@@ -7,3 +7,6 @@ before_install:
   - ./paper p
   - mvn clean install
   - cd ../
+  - git clone https://github.com/kNoAPP/Atlas.git
+  - cd Atlas
+  - mvn clean install
