@@ -34,7 +34,7 @@ public abstract class PermanentPotionEffectCard extends Card {
 	@Override
 	public boolean draw(Player p) {
 		boolean didEquip = super.draw(p);
-		if (didEquip) {
+		if(didEquip) {
 			tryAddEffect(p);
 		}
 		return didEquip;
@@ -43,7 +43,7 @@ public abstract class PermanentPotionEffectCard extends Card {
 	@Override
 	public boolean discard(Player p) {
 		boolean didDispose = super.discard(p);
-		if (didDispose) {
+		if(didDispose) {
 			tryRemoveEffect(p);
 		}
 		return didDispose;
@@ -65,7 +65,7 @@ public abstract class PermanentPotionEffectCard extends Card {
 	 * @param player the player to give the effect to
 	 */
 	public final void tryAddEffect(Player player) {
-		if (shouldHaveEffect(player)) {
+		if(shouldHaveEffect(player)) {
 			player.addPotionEffect(effect);
 		}
 	}
@@ -78,50 +78,50 @@ public abstract class PermanentPotionEffectCard extends Card {
 	 */
 	public final void tryRemoveEffect(Player player) {
 		PotionEffect current = player.getPotionEffect(effect.getType());
-		if (current == null) {
+		if(current == null) {
 			return;
 		}
 		
 		//can have multiple effects of the same type, but that's not really exposed in the API
 		player.removePotionEffect(effect.getType());
-		if (!isOurEffect(current)) {
+		if(!isOurEffect(current)) {
 			player.addPotionEffect(current);
 		}
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public final void onEffectRemoved(EntityPotionEffectEvent event) {
-		if (!(event.getEntity() instanceof Player)
+		if(!(event.getEntity() instanceof Player)
 				|| event.getOldEffect() == null
 				|| !event.getOldEffect().getType().equals(effect.getType())) {
 			return; //we only care about players and this effect type
 		}
 		
-		if (event.getAction() != EntityPotionEffectEvent.Action.CLEARED
+		if(event.getAction() != EntityPotionEffectEvent.Action.CLEARED
 				&& event.getAction() != EntityPotionEffectEvent.Action.REMOVED) {
 			return; //we don't care about effects being added or being upgraded
 		}
 		
-		if (event.getCause() != EntityPotionEffectEvent.Cause.DEATH
+		if(event.getCause() != EntityPotionEffectEvent.Cause.DEATH
 				&& event.getCause() != EntityPotionEffectEvent.Cause.MILK
 				&& event.getCause() != EntityPotionEffectEvent.Cause.EXPIRATION) {
 			return; //if a plugin/command tried to clear the effects, then let that happen
 		}
 		
 		Player player = (Player) event.getEntity();
-		if (!drawn.contains(player)) {
+		if(!drawn.contains(player)) {
 			return;
 		}
 		
 		PotionEffect oldEffect = event.getOldEffect();
-		if (isOurEffect(oldEffect)) { //the target effect was removed
-			if (shouldHaveEffect(player)) {
+		if(isOurEffect(oldEffect)) { //the target effect was removed
+			if(shouldHaveEffect(player)) {
 				event.setCancelled(true);
 			}
 		} else { //a better effect was removed
 			Bukkit.getScheduler().runTask(plugin, () -> { //we can't add effects during this event
-				if (Bukkit.getPlayer(player.getUniqueId()) == player && drawn.contains(player)) {
-					if (shouldHaveEffect(player)) {
+				if(Bukkit.getPlayer(player.getUniqueId()) == player && drawn.contains(player)) {
+					if(shouldHaveEffect(player)) {
 						player.addPotionEffect(effect);
 					}
 				}

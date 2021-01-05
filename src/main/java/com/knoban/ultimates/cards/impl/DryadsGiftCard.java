@@ -14,7 +14,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Random;
 
 @CardInfo(
         material = Material.OAK_LOG,

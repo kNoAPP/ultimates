@@ -1,3 +1,7 @@
+# Some tips to help out:
+# - Don't use the service account URL for your DatabaseURL! Instead, use the project name.
+#   If done right, it will look something like https://abcd-1234.firebaseio.com/
+# - AFKFishing is disabled by default, because people shouldn't be able to afk-cheat goods.
 Version: ${project.version}
 Firebase:
   DatabaseURL: 'https://<DATABASE_NAME>.firebaseio.com/'

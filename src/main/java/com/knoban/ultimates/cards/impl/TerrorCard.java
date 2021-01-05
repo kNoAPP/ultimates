@@ -48,12 +48,12 @@ public class TerrorCard extends Card {
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onVillagerKilled(EntityDeathEvent event) {
-		if (event.getEntityType() != EntityType.VILLAGER) {
+		if(event.getEntityType() != EntityType.VILLAGER) {
 			return;
 		}
 		
 		Player player = event.getEntity().getKiller();
-		if (player == null || !drawn.contains(player)) {
+		if(player == null || !drawn.contains(player)) {
 			return;
 		}
 		
@@ -63,7 +63,7 @@ public class TerrorCard extends Card {
 		Collection<Villager> nearby = center.getNearbyEntitiesByType(Villager.class, RANGE_HORIZONTAL,
 				RANGE_VERTICAL, RANGE_HORIZONTAL, e -> canAffectVillager(player, e));
 		
-		for (Villager villager : nearby) {
+		for(Villager villager : nearby) {
 			villager.getWorld().playSound(victim.getEyeLocation(), Sound.ENTITY_VILLAGER_HURT, 1, 1);
 			dropRandomTradeGood(villager);
 			runAway(villager, player);
@@ -72,7 +72,7 @@ public class TerrorCard extends Card {
 	
 	private boolean canAffectVillager(Player player, Villager villager) {
 		//filter out custom NPCs
-		if (!villager.isValid() || villager.isInvulnerable()
+		if(!villager.isValid() || villager.isInvulnerable()
 				|| !villager.isCollidable() || !villager.hasAI()) {
 			return false;
 		}
@@ -85,7 +85,7 @@ public class TerrorCard extends Card {
 	
 	private void dropRandomTradeGood(Villager villager) {
 		List<MerchantRecipe> recipes = villager.getRecipes();
-		if (recipes.isEmpty()) {
+		if(recipes.isEmpty()) {
 			return;
 		}
 		

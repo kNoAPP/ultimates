@@ -1,5 +1,6 @@
 package com.knoban.ultimates.cards.impl;
 
+import com.knoban.atlas.structure.Pair;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.CardInfo;
@@ -16,13 +17,8 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.scheduler.BukkitTask;
-import com.knoban.atlas.structure.Pair;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @CardInfo(
 		material = Material.SAND,
@@ -48,10 +44,10 @@ public class SteadyHandsCard extends Card {
 		currentTick = 0;
 		task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 			currentTick++;
-			for (Iterator<Pair<Long, Location>> iterator = justPlacedList.iterator(); iterator.hasNext(); ) {
+			for(Iterator<Pair<Long, Location>> iterator = justPlacedList.iterator(); iterator.hasNext(); ) {
 				Pair<Long, Location> pair = iterator.next();
 				//noinspection ConstantConditions
-				if (pair.getKey() <= currentTick) {
+				if(pair.getKey() <= currentTick) {
 					iterator.remove();
 					justPlacedSet.remove(pair.getValue());
 				} else {
@@ -69,7 +65,7 @@ public class SteadyHandsCard extends Card {
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		if (shouldAffect(event.getBlockPlaced().getType()) && drawn.contains(event.getPlayer())) {
+		if(shouldAffect(event.getBlockPlaced().getType()) && drawn.contains(event.getPlayer())) {
 			//Register that we just placed a sand mid-air and that it shouldn't fall
 			//3 ticks is a magic number, anything below that doesn't work
 			Location location = event.getBlock().getLocation();
@@ -83,7 +79,7 @@ public class SteadyHandsCard extends Card {
 	//Lowest: no reason anything should override it, we are just cancelling the event
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
 	public void onSandFall(EntityChangeBlockEvent event) {
-		if (event.getEntityType() == EntityType.FALLING_BLOCK && shouldAffectAndIsJustPlaced(event.getBlock())) {
+		if(event.getEntityType() == EntityType.FALLING_BLOCK && shouldAffectAndIsJustPlaced(event.getBlock())) {
 			//Don't let the just placed block fall
 			event.setCancelled(true);
 			//This probably notifies the clients not to make the sand fall client-side
@@ -94,7 +90,7 @@ public class SteadyHandsCard extends Card {
 	//Lowest: no reason anything should override it, we are just cancelling the event
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
 	public void onBlockUpdate(BlockPhysicsEvent event) {
-		if (shouldAffect(event.getBlock().getType())
+		if(shouldAffect(event.getBlock().getType())
 				|| shouldAffectAndIsJustPlaced(event.getSourceBlock())) {
 			//Don't let the just placed block make neighbouring blocks fall
 			event.setCancelled(true);

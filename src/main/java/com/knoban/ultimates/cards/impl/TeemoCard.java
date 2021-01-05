@@ -1,8 +1,6 @@
 package com.knoban.ultimates.cards.impl;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import com.knoban.atlas.scheduler.ClockedTask;
 import com.knoban.atlas.scheduler.ClockedTaskManager;
 import com.knoban.ultimates.Ultimates;
@@ -16,7 +14,9 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -88,14 +88,14 @@ public class TeemoCard extends Card {
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDeath(PlayerDeathEvent event) {
         ClockedTask task = notMovingPlayers.remove(event.getEntity().getUniqueId());
-        if (task != null) {
+        if(task != null) {
             task.setCancelled(true);
         }
     }
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMove(PlayerPostRespawnEvent e) {
-        if (drawn.contains(e.getPlayer())) {
+        if(drawn.contains(e.getPlayer())) {
             addMovementTask(e.getPlayer()); //TODO probably not fool proof, add more checks
         }
     }

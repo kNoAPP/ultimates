@@ -58,7 +58,7 @@ public class OOCRegenerationCard extends PermanentPotionEffectCard {
 	@Override
 	public boolean draw(Player p) {
 		boolean didEquip = super.draw(p);
-		if (didEquip) {
+		if(didEquip) {
 			tryAddEffect(p);
 		}
 		return didEquip;
@@ -67,7 +67,7 @@ public class OOCRegenerationCard extends PermanentPotionEffectCard {
 	@Override
 	public boolean discard(Player p) {
 		boolean didDispose = super.discard(p);
-		if (didDispose) {
+		if(didDispose) {
 			tryRemoveEffect(p);
 		}
 		return didDispose;
@@ -80,14 +80,14 @@ public class OOCRegenerationCard extends PermanentPotionEffectCard {
 	
 	@EventHandler
 	public void onEnterCombat(CombatEnterEvent event) {
-		if (drawn.contains(event.getPlayer())) {
+		if(drawn.contains(event.getPlayer())) {
 			tryRemoveEffect(event.getPlayer());
 		}
 	}
 	
 	@EventHandler
 	public void onLeaveCombat(CombatLeaveEvent event) {
-		if (event.getReason() == CombatLeaveEvent.Reason.TIMEOUT && drawn.contains(event.getPlayer())) {
+		if(event.getReason() == CombatLeaveEvent.Reason.TIMEOUT && drawn.contains(event.getPlayer())) {
 			//Reason.TIMEOUT: don't try to add the effect if the player quit or died
 			tryAddEffect(event.getPlayer());
 		}

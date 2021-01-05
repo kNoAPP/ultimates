@@ -2,6 +2,7 @@ package com.knoban.ultimates.cards.impl;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.knoban.atlas.utils.Cooldown;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.CardInfo;
@@ -17,7 +18,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import com.knoban.atlas.utils.Cooldown;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;

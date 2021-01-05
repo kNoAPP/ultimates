@@ -1,13 +1,13 @@
 package com.knoban.ultimates.cards;
 
 import com.google.firebase.database.*;
-import org.bukkit.Bukkit;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.events.CardDiscardEvent;
 import com.knoban.ultimates.events.CardDrawEvent;
 import com.knoban.ultimates.events.CardRegisterEvent;
 import com.knoban.ultimates.events.CardUnregisterEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;

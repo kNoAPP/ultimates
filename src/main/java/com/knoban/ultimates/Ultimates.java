@@ -1,17 +1,12 @@
 package com.knoban.ultimates;
 
-import com.knoban.ultimates.commands.parsables.PrimalSourceParsable;
-import com.knoban.ultimates.aspects.warmup.ActionWarmupManager;
 import com.knoban.atlas.claims.GenericEstateListener;
 import com.knoban.atlas.claims.LandManager;
 import com.knoban.atlas.commandsII.ACAPI;
 import com.knoban.atlas.data.firebase.AtlasFirebase;
 import com.knoban.atlas.data.local.DataHandler.YML;
-import com.knoban.ultimates.aspects.AlohaListener;
-import com.knoban.ultimates.aspects.CombatStateManager;
-import com.knoban.ultimates.aspects.GeneralListener;
-import com.knoban.ultimates.aspects.Items;
-import com.knoban.ultimates.aspects.MoveCallbackManager;
+import com.knoban.ultimates.aspects.*;
+import com.knoban.ultimates.aspects.warmup.ActionWarmupManager;
 import com.knoban.ultimates.battlepass.BattlePassManager;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.cardholder.OfflineCardHolder;
@@ -20,6 +15,7 @@ import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.cards.GeneralCardListener;
 import com.knoban.ultimates.claims.UltimatesEstateListener;
 import com.knoban.ultimates.commands.*;
+import com.knoban.ultimates.commands.parsables.PrimalSourceParsable;
 import com.knoban.ultimates.missions.MissionManager;
 import com.knoban.ultimates.missions.bossbar.BossBarAnimationHandler;
 import com.knoban.ultimates.player.LocalPDStoreManager;
@@ -59,25 +55,25 @@ public class Ultimates extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		getLogger().info("If you're using this plugin for the first time, please make sure that you have: ");
-		getLogger().info("1. Added GodComplexCore as a plugin (and properly configured it).");
-		getLogger().info("2. Created a Firebase project at: https://firebase.google.com/");
-		getLogger().info("3. Imported the admin key to the Ultimates plugin folder.");
-		getLogger().info("  - See (https://console.firebase.google.com/u/0/project/_/settings/serviceaccounts/adminsdk)");
-		getLogger().info("4. Told Ultimates/config.yml about your Firebase URL and key location.");
-		getLogger().info("This plugin will disable itself if it is misconfigured!");
-
 		long tStart = System.currentTimeMillis();
 		plugin = this;
-		addRecipies();
 		importData();
 		importAspects();
+		addRecipies();
 		reportInfo();
 		long tEnd = System.currentTimeMillis();
 		getLogger().info("Successfully Enabled! (" + (tEnd - tStart) + " ms)");
 		
-		if(failed)
+		if(failed) {
+			getLogger().warning("Unfortunately, Ultimates ran into errors on startup. It will disable itself now.");
+			getLogger().info("If you're using this plugin for the first time, please make sure that you have: ");
+			getLogger().info("1. Added Atlas as a plugin (and properly configured it).");
+			getLogger().info("2. Created a Firebase project at: https://firebase.google.com/");
+			getLogger().info("3. Imported the admin key to the Ultimates plugin folder.");
+			getLogger().info("  - See (https://console.firebase.google.com/u/0/project/_/settings/serviceaccounts/adminsdk)");
+			getLogger().info("4. Told Ultimates/config.yml about your Firebase URL and key location.");
 			getPluginLoader().disablePlugin(this);
+		}
 	}
 	
 	@Override
@@ -108,7 +104,7 @@ public class Ultimates extends JavaPlugin {
 		}
 
 		try {
-			firebase = new AtlasFirebase(fc.getString("Firebase.URL"), new File(getDataFolder(),
+			firebase = new AtlasFirebase(fc.getString("Firebase.DatabaseURL"), new File(getDataFolder(),
 					fc.getString("Firebase.Key")));
 		} catch(IOException e) {
 			getLogger().warning("Could not authenticate with Firebase: " + e.getMessage());
@@ -134,7 +130,6 @@ public class Ultimates extends JavaPlugin {
 		ACAPI.getApi().addParser(PrimalSource.class, new PrimalSourceParsable());
 
 		lpdsm = new LocalPDStoreManager(this);
-		// missionManager = new MissionManager(this, new YML(this, "/missions.yml"));
 		combatManager = new CombatStateManager(this, TimeUnit.SECONDS.toMillis(8));
 		moveCallbackManager = new MoveCallbackManager(this);
 		actionWarmupManager = new ActionWarmupManager(this);

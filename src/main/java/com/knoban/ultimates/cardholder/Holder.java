@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class Holder {
@@ -530,14 +529,14 @@ public abstract class Holder {
 
                     for(String cardName : (Iterable<String>) values.getOrDefault("drawnCards", Collections.emptyList())) {
                         Card card = Cards.getInstance().getCardInstance(cardName);
-                        if (card != null) { //silent skip: it will get logged when "ownedCards" are parsed
+                        if(card != null) { //silent skip: it will get logged when "ownedCards" are parsed
                             toDraw.add(card);
                         }
                     }
 
                     for(String cardName : (Iterable<String>) values.getOrDefault("ownedCards", Collections.emptyList())) {
                         Card card = Cards.getInstance().getCardInstance(cardName);
-                        if (card != null) {
+                        if(card != null) {
                             ownedCards.add(card);
                         } else {
                             plugin.getLogger().warning("Holder " + name + " owns non-existent card: " + cardName);

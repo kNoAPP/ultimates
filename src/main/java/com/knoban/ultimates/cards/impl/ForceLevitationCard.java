@@ -2,9 +2,9 @@ package com.knoban.ultimates.cards.impl;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.knoban.ultimates.Ultimates;
-import com.knoban.ultimates.cards.helpers.Levitation;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.CardInfo;
+import com.knoban.ultimates.cards.helpers.Levitation;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
 import org.bukkit.ChatColor;

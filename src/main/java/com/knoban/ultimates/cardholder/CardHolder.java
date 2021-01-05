@@ -16,13 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class CardHolder extends Holder {
@@ -769,8 +763,8 @@ public class CardHolder extends Holder {
      */
     public int forEachInPrimal(@NotNull PrimalSource primal, Consumer<CardHolder> action) {
         int counter = 0;
-        for (CardHolder cardHolder : getCardHolders()) {
-            if (cardHolder.getPrimalSource() == primal) {
+        for(CardHolder cardHolder : getCardHolders()) {
+            if(cardHolder.getPrimalSource() == primal) {
                 action.accept(cardHolder);
                 counter++;
             }

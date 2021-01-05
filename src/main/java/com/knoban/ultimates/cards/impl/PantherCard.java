@@ -49,7 +49,7 @@ public class PantherCard extends Card {
 	@Override
 	public boolean discard(Player p) {
 		boolean toRet = super.discard(p);
-		if (toRet) {
+		if(toRet) {
 			writeData(p.getUniqueId(), PERSISTENCE_KEY, charges.remove(p.getUniqueId()), null);
 		}
 		return toRet;
@@ -74,23 +74,23 @@ public class PantherCard extends Card {
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDied(PlayerDeathEvent event) {
-		if (drawn.contains(event.getEntity())) {
+		if(drawn.contains(event.getEntity())) {
 			charges.put(event.getEntity().getUniqueId(), 0f);
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDamageTaken(EntityDamageEvent event) {
-		if (event.getEntityType() != EntityType.PLAYER) {
+		if(event.getEntityType() != EntityType.PLAYER) {
 			return;
 		}
 		
 		Player player = (Player) event.getEntity();
-		if (drawn.contains(player) && player.getHealth() > event.getFinalDamage()) {
+		if(drawn.contains(player) && player.getHealth() > event.getFinalDamage()) {
 			//only add charge if the player won't die
 			float gain = (float) event.getDamage() * DAMAGE_TO_CHARGE_MULTIPLIER;
 			//we use the damage dealt and not the damage taken
-			if (addCharge(player.getUniqueId(), gain)) {
+			if(addCharge(player.getUniqueId(), gain)) {
 				broadcastReady(player);
 			}
 		}
@@ -99,13 +99,13 @@ public class PantherCard extends Card {
 	//normal priority: we modify the damage amount
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onDamageGiven(EntityDamageByEntityEvent event) {
-		if (!(event.getEntity() instanceof LivingEntity) || !(event.getDamager() instanceof Player)) {
+		if(!(event.getEntity() instanceof LivingEntity) || !(event.getDamager() instanceof Player)) {
 			return;
 		}
 		
 		Player player = (Player) event.getDamager();
 		//the following two accesses of charges aren't atomic, but it's fine
-		if (!drawn.contains(player) || charges.getOrDefault(player.getUniqueId(), 0f) < REQUIRED_CHARGE) {
+		if(!drawn.contains(player) || charges.getOrDefault(player.getUniqueId(), 0f) < REQUIRED_CHARGE) {
 			return;
 		}
 		

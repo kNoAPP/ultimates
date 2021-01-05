@@ -3,7 +3,6 @@ package com.knoban.ultimates.aspects;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.player.LocalPDStore;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
