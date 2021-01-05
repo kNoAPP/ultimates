@@ -1,1 +1,9 @@
 language: java
+before_install:
+  - git clone https://github.com/PaperMC/Paper.git
+  - cd Paper
+  - ./paper jar
+  - ./paper install
+  - ./paper p
+  - mvn clean install
+  - cd ../
