@@ -20,9 +20,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @CardInfo(
 		material = Material.FLINT,
@@ -40,7 +40,7 @@ public class PantherCard extends Card {
 	private static final PotionEffect ABILITY_BLINDNESS = new PotionEffect(PotionEffectType.BLINDNESS, 60, 0);
 	private static final double ABILITY_KNOCKBACK_STRENGTH = 5;
 	private static final double ABILITY_KNOCKBACK_VERTICAL = 0.7;
-	private final Map<UUID, Float> charges = new ConcurrentHashMap<>();
+	private final Map<UUID, Float> charges = new HashMap<>();
 	
 	public PantherCard(Ultimates plugin) {
 		super(plugin);
@@ -96,7 +96,8 @@ public class PantherCard extends Card {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	//normal priority: we modify the damage amount
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onDamageGiven(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity) || !(event.getDamager() instanceof Player)) {
 			return;

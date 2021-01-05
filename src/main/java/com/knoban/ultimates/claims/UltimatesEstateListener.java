@@ -60,4 +60,6 @@ public class UltimatesEstateListener implements Listener {
             }
         }
     }
+    
+    //TODO consider listening to PreAbilityTeleportEvent and cancelling it if the player isn't an owner
 }

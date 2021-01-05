@@ -2,7 +2,6 @@ package com.knoban.ultimates.cards;
 
 import com.google.firebase.database.*;
 import org.bukkit.Bukkit;
-import com.knoban.atlas.callbacks.Callback;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.events.CardDiscardEvent;
@@ -289,7 +288,7 @@ public abstract class Card implements Listener {
      * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void writeData(@NotNull UUID uuid, @NotNull String key, @Nullable Object value,
-                             @Nullable Callback onSuccess) {
+                             @Nullable Runnable onSuccess) {
         Map<String, Object> data = new TreeMap<>();
         data.put(key, value);
 
@@ -304,18 +303,18 @@ public abstract class Card implements Listener {
      * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void writeData(@NotNull UUID uuid, @NotNull Map<String, Object> data,
-                        @Nullable Callback onSuccess) {
+                             @Nullable Runnable onSuccess) {
         if(writeLock.contains(uuid))
             return;
 
         playerReference.child(uuid.toString()).updateChildren(data, (error, ref) -> {
-                if(error != null) {
-                    plugin.getLogger().info("Failed to save p_data " + info.name()
-                            + " (" + uuid + "): " + error.getMessage());
-                } else {
-                    onSuccess.call();
-                }
-            });
+            if(error != null) {
+                plugin.getLogger().info("Failed to save p_data " + info.name()
+                        + " (" + uuid + "): " + error.getMessage());
+            } else {
+                onSuccess.run();
+            }
+        });
     }
 
     /**
@@ -327,7 +326,7 @@ public abstract class Card implements Listener {
      * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void incrementData(@NotNull UUID uuid, @NotNull String key, long amount,
-                                 @Nullable Callback onSuccess) {
+                                 @Nullable Runnable onSuccess) {
         if(writeLock.contains(uuid))
             return;
 
@@ -345,7 +344,7 @@ public abstract class Card implements Listener {
                     plugin.getLogger().info("Failed to save p_data " + info.name()
                             + " (" + uuid + "): " + error.getMessage());
                 else if(onSuccess != null)
-                    onSuccess.call();
+                    onSuccess.run();
             }
         }, false);
     }
@@ -358,7 +357,7 @@ public abstract class Card implements Listener {
      * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void writeData(@NotNull String key, @Nullable Object value,
-                             @Nullable Callback onSuccess) {
+                             @Nullable Runnable onSuccess) {
         Map<String, Object> data = new TreeMap<>();
         data.put(key, value);
 
@@ -371,13 +370,13 @@ public abstract class Card implements Listener {
      * @param data The card's data map
      * @param onSuccess Callback that is called if the transaction is successful.
      */
-    protected void writeData(@NotNull Map<String, Object> data, @Nullable Callback onSuccess) {
+    protected void writeData(@NotNull Map<String, Object> data, @Nullable Runnable onSuccess) {
         extrasReference.updateChildren(data, (error, ref) -> {
             if(error != null) {
                 plugin.getLogger().info("Failed to save extras " + info.name()
                         + ": " + error.getMessage());
             } else {
-                onSuccess.call();
+                onSuccess.run();
             }
         });
     }
@@ -389,7 +388,7 @@ public abstract class Card implements Listener {
      * @param amount The amount to increment the key
      * @param onSuccess Callback that is called if the transaction is successful.
      */
-    protected void incrementData(@NotNull String key, long amount, @Nullable Callback onSuccess) {
+    protected void incrementData(@NotNull String key, long amount, @Nullable Runnable onSuccess) {
         extrasReference.child(key).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData currentData) {
@@ -404,7 +403,7 @@ public abstract class Card implements Listener {
                     plugin.getLogger().info("Failed to save extras " + info.name()
                             + " (" + key + "): " + error.getMessage());
                 else if(onSuccess != null)
-                    onSuccess.call();
+                    onSuccess.run();
             }
         }, false);
     }

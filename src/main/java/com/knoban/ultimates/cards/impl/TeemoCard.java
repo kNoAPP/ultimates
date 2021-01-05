@@ -1,5 +1,8 @@
 package com.knoban.ultimates.cards.impl;
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import com.knoban.atlas.scheduler.ClockedTask;
 import com.knoban.atlas.scheduler.ClockedTaskManager;
 import com.knoban.ultimates.Ultimates;
@@ -30,9 +33,8 @@ import java.util.UUID;
         tier = Tier.RARE
 )
 public class TeemoCard extends Card {
-
     public static final int STILL_SECONDS = 8;
-
+    private static final ItemStack[] EMPTY_ARMOR = new ItemStack[4];
     private HashMap<UUID, ClockedTask> notMovingPlayers = new HashMap<>();
     private HashMap<UUID, ItemStack[]> savedArmor = new HashMap<>();
 
@@ -65,8 +67,9 @@ public class TeemoCard extends Card {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
-        if(drawn.contains(p) && e.getFrom().getWorld().equals(e.getTo().getWorld())
-                && e.getFrom().distanceSquared(e.getTo()) > 0.05) {
+        if(drawn.contains(p) && (!e.getFrom().getWorld().equals(e.getTo().getWorld())
+                || e.getFrom().distanceSquared(e.getTo()) > 0.05)) {
+        	//TODO if a player is sprinting, then we are creating hundreds of tasks, that's not up to our standards
             ClockedTask task = notMovingPlayers.remove(p.getUniqueId());
             if(task == null) {
                 show(p);
@@ -74,6 +77,26 @@ public class TeemoCard extends Card {
                 task.setCancelled(true);
 
             addMovementTask(p);
+        }
+    }
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onMove(PlayerTeleportEvent e) {
+    	onMove((PlayerMoveEvent) e);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onDeath(PlayerDeathEvent event) {
+        ClockedTask task = notMovingPlayers.remove(event.getEntity().getUniqueId());
+        if (task != null) {
+            task.setCancelled(true);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onMove(PlayerPostRespawnEvent e) {
+        if (drawn.contains(e.getPlayer())) {
+            addMovementTask(e.getPlayer()); //TODO probably not fool proof, add more checks
         }
     }
 
@@ -96,10 +119,7 @@ public class TeemoCard extends Card {
                 3, 0.3F, 0.3F, 0.3F, 0.01);
 
         ItemStack[] armor = savedArmor.remove(p.getUniqueId());
-        p.getInventory().setHelmet(armor[0]);
-        p.getInventory().setChestplate(armor[1]);
-        p.getInventory().setLeggings(armor[2]);
-        p.getInventory().setBoots(armor[3]);
+        p.getInventory().setArmorContents(armor);
     }
 
     private void hide(Player p) {
@@ -109,17 +129,8 @@ public class TeemoCard extends Card {
         p.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, p.getLocation().clone().add(0, 0.5, 0),
                 3, 0.3F, 0.3F, 0.3F, 0.01);
 
-        ItemStack[] armor = new ItemStack[4];
-        armor[0] = p.getInventory().getHelmet();
-        armor[1] = p.getInventory().getChestplate();
-        armor[2] = p.getInventory().getLeggings();
-        armor[3] = p.getInventory().getBoots();
-
-        p.getInventory().setHelmet(new ItemStack(Material.AIR));
-        p.getInventory().setChestplate(new ItemStack(Material.AIR));
-        p.getInventory().setLeggings(new ItemStack(Material.AIR));
-        p.getInventory().setBoots(new ItemStack(Material.AIR));
-
+        ItemStack[] armor = p.getInventory().getArmorContents();
         savedArmor.put(p.getUniqueId(), armor);
+        p.getInventory().setArmorContents(EMPTY_ARMOR);
     }
 }

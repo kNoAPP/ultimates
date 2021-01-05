@@ -1,7 +1,6 @@
 package com.knoban.ultimates.missions;
 
 import com.google.firebase.database.*;
-import com.knoban.atlas.utils.Tools;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.missions.bossbar.BossBarAnimationHandler;
@@ -16,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import com.knoban.atlas.utils.Tools;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -199,7 +199,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     }
 
     /**
-     * @return A whole number bigger than 0 representing the amount of progress needed to complete the mission.
+     * @return A whole number greater than 0 representing the amount of progress needed to complete the mission.
      */
     public long getMaxProgress() {
         return maxProgress;

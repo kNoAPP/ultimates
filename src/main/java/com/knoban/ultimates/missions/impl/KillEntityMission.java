@@ -1,6 +1,5 @@
 package com.knoban.ultimates.missions.impl;
 
-import com.knoban.atlas.utils.Tools;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.missions.Mission;
 import com.knoban.ultimates.missions.MissionInfo;
@@ -13,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
+import com.knoban.atlas.utils.Tools;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

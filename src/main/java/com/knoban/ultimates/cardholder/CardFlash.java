@@ -1,6 +1,5 @@
 package com.knoban.ultimates.cardholder;
 
-import com.knoban.atlas.callbacks.Callback;
 import com.knoban.ultimates.cards.Card;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -19,7 +18,7 @@ public class CardFlash {
 
     private final JavaPlugin plugin;
     private final Player holder;
-    private final Callback onInvalidation;
+    private final Runnable onInvalidation;
     private boolean valid;
     private BukkitTask task;
 
@@ -30,7 +29,7 @@ public class CardFlash {
     private static final float RADIUS = 2.5f;
     private static final float ROTATIONS = 1f;
 
-    public CardFlash(JavaPlugin plugin, CardHolder holder, Callback onInvalidation) {
+    public CardFlash(JavaPlugin plugin, CardHolder holder, Runnable onInvalidation) {
         this.plugin = plugin;
         this.holder = holder.getPlayer();
         this.onInvalidation = onInvalidation;
@@ -129,7 +128,7 @@ public class CardFlash {
             task.cancel();
             flashedCards.forEach(Entity::remove);
             if(onInvalidation != null)
-                onInvalidation.call();
+                onInvalidation.run();
         }
     }
 }

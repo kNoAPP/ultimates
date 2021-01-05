@@ -89,7 +89,7 @@ public class StrangeBowCard extends Card {
                     int i = 0;
                     public void run() {
                         if(!newArrow.isValid() || newArrow.isDead()
-                                || (++i > 5 && newArrow.isOnGround()) || newArrow.getNearbyEntities(2, 2, 2).stream().filter(e -> e != proj.getShooter() && e instanceof LivingEntity).count() > 0) {
+                                || (++i > 5 && newArrow.isOnGround()) || newArrow.getNearbyEntities(2, 2, 2).stream().anyMatch(e -> e != proj.getShooter() && e instanceof LivingEntity)) {
                             if(proj.isValid() && !proj.isDead()) {
                                 proj.setGravity(newArrow.hasGravity());
                                 proj.teleport(newArrow.getLocation());

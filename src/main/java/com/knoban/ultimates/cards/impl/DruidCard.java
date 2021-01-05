@@ -46,7 +46,7 @@ public class DruidCard extends Card {
     public void onEggThrow(PlayerEggThrowEvent e) {
         Player p = e.getPlayer();
         if(drawn.contains(p)) {
-            e.setHatchingType(EntityType.values()[ThreadLocalRandom.current().nextInt(entityTypeArray.length-1)]);
+            e.setHatchingType(entityTypeArray[ThreadLocalRandom.current().nextInt(entityTypeArray.length)]);
         }
     }
 }

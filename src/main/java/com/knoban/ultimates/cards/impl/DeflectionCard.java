@@ -25,13 +25,14 @@ public class DeflectionCard extends Card {
         super(plugin);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    //normal priority: we modify the damage amount
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent e) {
         if(e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
             if(drawn.contains(p)) {
                 if(e.getDamage() > 0)
-                    e.setDamage(e.getDamage() - 1);
+                    e.setDamage(Math.max(0, e.getDamage() - 1));
             }
         }
     }

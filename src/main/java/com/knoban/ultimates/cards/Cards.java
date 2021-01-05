@@ -17,7 +17,8 @@ public final class Cards {
             FallCard.class, TwinsCard.class, EnlightenedCard.class, PokeCard.class, TeemoCard.class, FlashbangCard.class,
             DruidCard.class, XRayCard.class, PortalCard.class, JuggernautCard.class, TankCard.class, HotHandsCard.class,
             DryadsGiftCard.class, RunnersDietCard.class, TerrorCard.class, PantherCard.class, SpeedCard.class,
-            SteadyHandsCard.class, AnchorCard.class, UnyieldingMightCard.class);
+            SteadyHandsCard.class, AnchorCard.class, UnyieldingMightCard.class, FalconCard.class, ParleyCard.class,
+            SchoolingCard.class, ShadowsUpriseCard.class, RealityPhaseCard.class, SchoolingCard.class);
 
     private static final Cards INSTANCE = new Cards();
 

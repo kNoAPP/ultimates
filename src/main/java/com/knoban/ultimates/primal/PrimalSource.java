@@ -3,6 +3,7 @@ package com.knoban.ultimates.primal;
 import com.knoban.ultimates.cards.Card;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.boss.BarColor;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -10,20 +11,24 @@ import java.util.List;
 
 public enum PrimalSource {
 
-    NONE("§9No Primal"),
-    SUN("§6Sun"),
-    MOON("§fMoon"),
-    SKY("§bSky"),
-    EARTH("§aEarth"),
-    OCEAN("§3Ocean"),
-    FIRE("§cFire"),
-    DARK("§8Dark");
+    NONE("§9No Primal", ChatColor.BLUE, BarColor.BLUE),
+    SUN("§6Sun", ChatColor.GOLD, BarColor.YELLOW),
+    MOON("§fMoon", ChatColor.WHITE, BarColor.WHITE),
+    SKY("§bSky", ChatColor.AQUA, BarColor.PINK),
+    EARTH("§aEarth", ChatColor.GREEN, BarColor.GREEN),
+    OCEAN("§3Ocean", ChatColor.DARK_AQUA, BarColor.BLUE),
+    FIRE("§cFire", ChatColor.RED, BarColor.RED),
+    DARK("§8Dark", ChatColor.DARK_GRAY, BarColor.PURPLE);
 
     private final String display;
+    private final ChatColor chatColor;
+    private final BarColor barColor;
     private final Team team;
 
-    PrimalSource(String display) {
+    PrimalSource(String display, ChatColor chatColor, BarColor barColor) {
         this.display = display;
+        this.chatColor = chatColor;
+        this.barColor = barColor;
         Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
         String teamName = "ults-" + name();
         Team team = sb.getTeam(teamName);
@@ -43,6 +48,14 @@ public enum PrimalSource {
 
     public String getDisplay() {
         return display;
+    }
+    
+    public ChatColor getChatColor() {
+        return chatColor;
+    }
+    
+    public BarColor getBarColor() {
+        return barColor;
     }
 
     public Team getTeam() {

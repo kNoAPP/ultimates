@@ -16,8 +16,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class CardHolder extends Holder {
 
@@ -76,7 +82,6 @@ public class CardHolder extends Holder {
     /**
      * Equip cards to the CardHolder
      * @param cards - The cards to equip. If no override, will equip as many cards as possible in the order given
-     * @return true if the equipped set of cards changed as a result of the call
      * @return true if the equipped set of cards changed as a result of the call
      */
     @Override
@@ -695,7 +700,7 @@ public class CardHolder extends Holder {
 
     /**
      * To be called when a CardHolder logs out
-     * @param shutdown Was the logout due to a shutdown?
+     * @param shutdown True, if the logout was caused by a server shutdown
      */
     public void logout(boolean shutdown) {
         players.remove(player);
@@ -738,5 +743,38 @@ public class CardHolder extends Holder {
     @NotNull
     public static CardHolder getNewCardHolder(@NotNull Ultimates plugin, @NotNull Player p) {
         return new CardHolder(plugin, p);
+    }
+    
+    /**
+     * Gets all instances whose {@link #getPrimalSource()} equals the specified one.
+     * Please keep in mind that the returned value is not cached.
+     *
+     * @param primal the {@link PrimalSource} to search for
+     * @return all instances in the {@link PrimalSource}
+     */
+    public Collection<CardHolder> getAllInPrimal(@NotNull PrimalSource primal) {
+        Set<CardHolder> result = new HashSet<>();
+        forEachInPrimal(primal, result::add);
+        return result;
+    }
+    
+    /**
+     * Executes the specified callback for each instance whose
+     * {@link #getPrimalSource()} equals the specified one.
+     * Please keep in mind the lookup is not cached.
+     *
+     * @param primal the {@link PrimalSource} to search for
+     * @param action the action to execute for each matching instance
+     * @return the amount of times the callback was called
+     */
+    public int forEachInPrimal(@NotNull PrimalSource primal, Consumer<CardHolder> action) {
+        int counter = 0;
+        for (CardHolder cardHolder : getCardHolders()) {
+            if (cardHolder.getPrimalSource() == primal) {
+                action.accept(cardHolder);
+                counter++;
+            }
+        }
+        return counter;
     }
 }

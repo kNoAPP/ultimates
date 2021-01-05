@@ -1,7 +1,6 @@
 package com.knoban.ultimates.cards.impl;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import com.knoban.atlas.callbacks.Callback;
 import com.knoban.atlas.listeners.HeldSlotListener;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cards.Card;
@@ -69,7 +68,7 @@ public class SoulCard extends Card {
         if(toRet) {
             p.getInventory().addItem(SCYTHE_ITEM);
 
-            Callback callback = () -> {
+            Runnable callback = () -> {
                 int soulCount = souls.getOrDefault(p.getUniqueId(), 0);
                 p.sendActionBar("§4§oSouls §7(§c" + soulCount + "§7)");
             };
@@ -119,7 +118,8 @@ public class SoulCard extends Card {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    //normal priority: we modify the damage amount
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onDamageEvent(EntityDamageByEntityEvent e) {
         if(e.getDamager() instanceof Player) {
             Player p = (Player) e.getDamager();

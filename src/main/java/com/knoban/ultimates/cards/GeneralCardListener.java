@@ -82,7 +82,7 @@ public class GeneralCardListener implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        e.getDrops().removeIf((i) -> !Items.isLocked(i));
+        e.getDrops().removeIf(Items::isLocked);
     }
 
     /* END OF MESS */

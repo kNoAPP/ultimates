@@ -6,6 +6,7 @@ import com.knoban.ultimates.cards.base.PermanentPotionEffectCard;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
@@ -49,5 +50,10 @@ public class SpeedCard extends PermanentPotionEffectCard {
 		meta = (PotionMeta) drawnIcon.getItemMeta();
 		meta.setBasePotionData(data);
 		drawnIcon.setItemMeta(meta);
+	}
+	
+	@Override
+	protected boolean shouldHaveEffect(Player player) {
+		return true;
 	}
 }

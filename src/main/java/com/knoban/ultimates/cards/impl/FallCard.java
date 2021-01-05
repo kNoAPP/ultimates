@@ -25,7 +25,8 @@ public class FallCard extends Card {
         super(plugin);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    //normal priority: we modify the damage amount
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerDamage(EntityDamageEvent e) {
         if(e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();

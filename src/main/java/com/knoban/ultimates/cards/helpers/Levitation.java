@@ -1,6 +1,5 @@
 package com.knoban.ultimates.cards.helpers;
 
-import com.knoban.atlas.callbacks.Callback;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.claims.UltimatesEstateListener;
 import org.bukkit.Material;
@@ -24,7 +23,7 @@ public class Levitation {
 
 	private final JavaPlugin plugin;
 	private final Player p;
-	private final Callback invalidationCallback;
+	private final Runnable invalidationCallback;
 	private LivingEntity le;
 	private ArmorStand as;
 	private BlockData bd;
@@ -36,7 +35,7 @@ public class Levitation {
 	
 	private boolean ready = false, valid = true;
 	
-	public Levitation(JavaPlugin plugin, Player p, Block b, Callback invalidationCallback) {
+	public Levitation(JavaPlugin plugin, Player p, Block b, Runnable invalidationCallback) {
 		this.plugin = plugin;
 		this.p = p;
 		this.m = b.getType();
@@ -45,7 +44,7 @@ public class Levitation {
 		this.type = BLOCK;
 	}
 	
-	public Levitation(JavaPlugin plugin, Player p, LivingEntity le, Callback invalidationCallback) {
+	public Levitation(JavaPlugin plugin, Player p, LivingEntity le, Runnable invalidationCallback) {
 		this.plugin = plugin;
 		this.p = p;
 		this.le = le;
@@ -120,7 +119,7 @@ public class Levitation {
 		
 		valid = false;
 		if(invalidationCallback != null)
-			invalidationCallback.call();
+			invalidationCallback.run();
 
 		List<LivingEntity> hitEntities = new ArrayList<>();
 		hitEntities.add(p);
@@ -173,7 +172,7 @@ public class Levitation {
 
 		valid = false;
 		if(invalidationCallback != null)
-			invalidationCallback.call();
+			invalidationCallback.run();
 	}
 
 	public boolean isValid() {

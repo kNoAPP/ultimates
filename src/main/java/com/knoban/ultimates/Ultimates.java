@@ -1,13 +1,17 @@
 package com.knoban.ultimates;
 
+import com.knoban.ultimates.commands.parsables.PrimalSourceParsable;
+import com.knoban.ultimates.aspects.warmup.ActionWarmupManager;
 import com.knoban.atlas.claims.GenericEstateListener;
 import com.knoban.atlas.claims.LandManager;
+import com.knoban.atlas.commandsII.ACAPI;
 import com.knoban.atlas.data.firebase.AtlasFirebase;
 import com.knoban.atlas.data.local.DataHandler.YML;
-import com.knoban.atlas.listeners.CombatListener;
 import com.knoban.ultimates.aspects.AlohaListener;
+import com.knoban.ultimates.aspects.CombatStateManager;
 import com.knoban.ultimates.aspects.GeneralListener;
 import com.knoban.ultimates.aspects.Items;
+import com.knoban.ultimates.aspects.MoveCallbackManager;
 import com.knoban.ultimates.battlepass.BattlePassManager;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.cardholder.OfflineCardHolder;
@@ -30,6 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class Ultimates extends JavaPlugin {
 
@@ -41,7 +46,9 @@ public class Ultimates extends JavaPlugin {
 	private AlohaListener aloha;
 	private GeneralCardListener gcl;
 	private LandManager landManager;
-	private CombatListener combatListener;
+	private CombatStateManager combatManager;
+	private MoveCallbackManager moveCallbackManager;
+	private ActionWarmupManager actionWarmupManager;
 	private BossBarAnimationHandler bossBarAnimationHandler;
 	private BattlePassManager battlepassManager;
 	private MissionManager missionManager;
@@ -53,7 +60,7 @@ public class Ultimates extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		getLogger().info("If you're using this plugin for the first time, please make sure that you have: ");
-		getLogger().info("1. Added Atlas as a plugin (and properly configured it).");
+		getLogger().info("1. Added GodComplexCore as a plugin (and properly configured it).");
 		getLogger().info("2. Created a Firebase project at: https://firebase.google.com/");
 		getLogger().info("3. Imported the admin key to the Ultimates plugin folder.");
 		getLogger().info("  - See (https://console.firebase.google.com/u/0/project/_/settings/serviceaccounts/adminsdk)");
@@ -124,9 +131,13 @@ public class Ultimates extends JavaPlugin {
 		
 		getLogger().info("Importing aspects...");
 
+		ACAPI.getApi().addParser(PrimalSource.class, new PrimalSourceParsable());
+
 		lpdsm = new LocalPDStoreManager(this);
 		// missionManager = new MissionManager(this, new YML(this, "/missions.yml"));
-		combatListener = new CombatListener(this, 8);
+		combatManager = new CombatStateManager(this, TimeUnit.SECONDS.toMillis(8));
+		moveCallbackManager = new MoveCallbackManager(this);
+		actionWarmupManager = new ActionWarmupManager(this);
 		bossBarAnimationHandler = new BossBarAnimationHandler(this);
 		battlepassManager = new BattlePassManager(this);
 		missionManager = new MissionManager(this);
@@ -191,6 +202,10 @@ public class Ultimates extends JavaPlugin {
 			return;
 		
 		getLogger().info("Exporting aspects...");
+		
+		combatManager.shutdown();
+		moveCallbackManager.shutdown();
+		actionWarmupManager.shutdown();
 
 		// Disconnect all players means we need to save data!
 		for(Player pl : Bukkit.getOnlinePlayers())
@@ -227,8 +242,16 @@ public class Ultimates extends JavaPlugin {
 		return missionManager;
 	}
 
-	public CombatListener getCombatListener() {
-		return combatListener;
+	public CombatStateManager getCombatManager() {
+		return combatManager;
+	}
+
+	public MoveCallbackManager getMoveCallbackManager() {
+		return moveCallbackManager;
+	}
+
+	public ActionWarmupManager getActionWarmupManager() {
+		return actionWarmupManager;
 	}
 
 	public YML getConfigFile() {

@@ -3,7 +3,6 @@ package com.knoban.ultimates.cards.impl;
 import com.destroystokyo.paper.event.entity.EntityPathfindEvent;
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import com.knoban.atlas.callbacks.Callback;
 import com.knoban.atlas.listeners.HeldSlotListener;
 import com.knoban.atlas.utils.Cooldown;
 import com.knoban.ultimates.Ultimates;
@@ -132,7 +131,7 @@ public class SplashPotionOfGetHisAssCard extends Card {
         boolean toRet = super.draw(p);
         if(toRet) {
             p.getInventory().addItem(SPLASH_POTION_OF_GET_HIS_ASS);
-            Callback callback = () -> {
+            Runnable callback = () -> {
                 int charges = potions.getOrDefault(p.getUniqueId(), 0);
                 Cooldown cooldown = potionCooldown.getOrDefault(p.getUniqueId(), new Cooldown(0));
                 String msg = charges >= MAX_CHARGES

@@ -34,14 +34,6 @@ public class AlohaListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        p.sendMessage("§f§lHi " + p.getName() + "! §7Welcome to Sanctums.");
-        p.sendMessage("§2You're about to be prompted for a resource pack.");
-        p.sendMessage("§2This pack has some custom sounds we use often.");
-        p.sendMessage("§2Don't worry, we won't change any of your textures.");
-        p.sendMessage("§aFor the best experience, please accept our resource pack!");
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            p.setResourcePack("https://firebasestorage.googleapis.com/v0/b/ultimates-gc.appspot.com/o/knoban.zip?alt=media&token=b3040514-9495-48eb-a15e-d3856341e0e1", "fd90f8051f8ad7f7197bf21758cb8a5484c0e563");
-        }, 200L);
         join(p);
     }
 

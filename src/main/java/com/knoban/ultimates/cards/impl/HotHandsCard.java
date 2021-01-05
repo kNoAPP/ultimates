@@ -41,4 +41,3 @@ public class HotHandsCard extends Card {
         }
     }
 }
-//

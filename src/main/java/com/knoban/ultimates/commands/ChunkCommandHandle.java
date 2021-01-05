@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.knoban.atlas.commandsII.ACAPI;
 import com.knoban.atlas.commandsII.annotations.AtlasCommand;
+import com.knoban.atlas.utils.Tools;
 
 public class ChunkCommandHandle {
 
@@ -40,11 +41,29 @@ public class ChunkCommandHandle {
         range = (range / 16) * 16; // Floor range to multiple of 16.
         int chunks = (range / 8) * (range / 8);
         sender.sendMessage("§aBeginning chunk generation of §2" + chunks + " chunks§a!");
+        sender.sendMessage("§eThis operation will complete in §6~" + Tools.millisToDHMS(chunks * 50) + "§e.");
 
+        long delay = 0;
         for(int dx=-range; dx<range; dx+=16) {
             for(int dz=-range; dz<range; dz+=16) {
-                world.getChunkAtAsync(centerX+dx, centerZ+dz, true);
+                final int x = centerX+dx;
+                final int z = centerZ+dz;
+                plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+                    world.getChunkAtAsync(x, z, true);
+                }, delay++);
+
+                // Save the world every 1200 generated chunks, about every ~60s.
+                if(delay % 1000 == 0) {
+                    plugin.getServer().getScheduler().runTaskLater(plugin, world::save, delay);
+                }
             }
         }
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            world.save();
+            plugin.getServer().getLogger().info("§aChunk generation of §2" + chunks + " chunks §ahas finished!");
+            if(sender.isOnline()) {
+                sender.sendMessage("§aChunk generation of §2" + chunks + " chunks §ahas finished!");
+            }
+        }, delay);
     }
 }

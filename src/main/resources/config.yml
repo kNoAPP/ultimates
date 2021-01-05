@@ -1,5 +1,5 @@
 Version: ${project.version}
 Firebase:
-  URL: 'https://<DATABASE_NAME>.firebaseio.com/'
+  DatabaseURL: 'https://<DATABASE_NAME>.firebaseio.com/'
   Key: 'key.json'
 AllowAFKFishing: false
