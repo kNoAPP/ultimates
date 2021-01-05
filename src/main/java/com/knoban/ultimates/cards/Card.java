@@ -253,6 +253,7 @@ public abstract class Card implements Listener {
     /**
      * Called when player data must be created for the first time.
      * Runs on main game thread.
+     * @param p The player the data concerns
      */
     public void onDefaultPlayerData(Player p) {
         // By default, do nothing. This can be overridden on a per-card basis.
@@ -262,6 +263,7 @@ public abstract class Card implements Listener {
      * Called when new data becomes available for the card. This will be called whenever data is written
      * to firebase that concerns the Extra.
      * Runs on main game thread.
+     * @param data The data map
      */
     public void onExtraData(Map<String, Object> data) {
         // By default, do nothing. This can be overridden on a per-card basis.
@@ -271,6 +273,8 @@ public abstract class Card implements Listener {
      * Called when new data becomes available for the player. This will be called whenever data is written
      * to firebase that concerns the player.
      * Runs on main game thread.
+     * @param p The player the data concerns
+     * @param data The data map
      */
     public void onPlayerData(Player p, Map<String, Object> data) {
         // By default, do nothing. This can be overridden on a per-card basis.
@@ -278,19 +282,26 @@ public abstract class Card implements Listener {
 
     /**
      * Write data to the database that concerns a player. This will in turn call {@link #onPlayerData(Player, Map)}
-     * The callback is async.
+     * The callback is async and will update provided keys and keep other existing ones.
+     * @param uuid The uuid of the player
+     * @param key The key of the data
+     * @param value The value of the key
+     * @param onSuccess Callback that is called if the transaction is successful.
      */
-    protected void writeData(@NotNull UUID uuid, @NotNull String child, @Nullable Object value,
+    protected void writeData(@NotNull UUID uuid, @NotNull String key, @Nullable Object value,
                              @Nullable Callback onSuccess) {
         Map<String, Object> data = new TreeMap<>();
-        data.put(child, value);
+        data.put(key, value);
 
         writeData(uuid, data, onSuccess);
     }
 
     /**
      * Write data to the database that concerns a player. This will in turn call {@link #onPlayerData(Player, Map)}
-     * The callback is async.
+     * The callback is async and will update provided keys and keep other existing ones.
+     * @param uuid The uuid of the player
+     * @param data The card's data map
+     * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void writeData(@NotNull UUID uuid, @NotNull Map<String, Object> data,
                         @Nullable Callback onSuccess) {
@@ -309,7 +320,11 @@ public abstract class Card implements Listener {
 
     /**
      * Increment long data to the database that concerns a player. This will in turn call {@link #onPlayerData(Player, Map)}
-     * The callback is async.
+     * The callback is async and will update provided keys and keep other existing ones.
+     * @param uuid The uuid of the player
+     * @param key The key of the data
+     * @param amount The amount to increment the key
+     * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void incrementData(@NotNull UUID uuid, @NotNull String key, long amount,
                                  @Nullable Callback onSuccess) {
@@ -337,19 +352,24 @@ public abstract class Card implements Listener {
 
     /**
      * Write data to the database that concerns the card. This will in turn call {@link #onExtraData(Map)}
-     * The callback is async.
+     * The callback is async and will update provided keys and keep other existing ones.
+     * @param key The key of the data
+     * @param value The value of the key
+     * @param onSuccess Callback that is called if the transaction is successful.
      */
-    protected void writeData(@NotNull String child, @Nullable Object value,
+    protected void writeData(@NotNull String key, @Nullable Object value,
                              @Nullable Callback onSuccess) {
         Map<String, Object> data = new TreeMap<>();
-        data.put(child, value);
+        data.put(key, value);
 
         writeData(data, onSuccess);
     }
 
     /**
      * Write data to the database that concerns the card. This will in turn call {@link #onExtraData(Map)}
-     * The callback is async.
+     * The callback is async and will update provided keys and keep other existing ones.
+     * @param data The card's data map
+     * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void writeData(@NotNull Map<String, Object> data, @Nullable Callback onSuccess) {
         extrasReference.updateChildren(data, (error, ref) -> {
@@ -364,7 +384,10 @@ public abstract class Card implements Listener {
 
     /**
      * Increment long data to the database that concerns the card. This will in turn call {@link #onExtraData(Map)}
-     * The callback is async.
+     * The callback is async and will update provided key and keep other existing ones.
+     * @param key The key of the data
+     * @param amount The amount to increment the key
+     * @param onSuccess Callback that is called if the transaction is successful.
      */
     protected void incrementData(@NotNull String key, long amount, @Nullable Callback onSuccess) {
         extrasReference.child(key).runTransaction(new Transaction.Handler() {

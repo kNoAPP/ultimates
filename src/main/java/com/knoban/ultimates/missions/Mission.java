@@ -199,7 +199,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     }
 
     /**
-     * @return A whole number > 0 representing the amount of progress needed to complete the mission.
+     * @return A whole number bigger than 0 representing the amount of progress needed to complete the mission.
      */
     public long getMaxProgress() {
         return maxProgress;
@@ -264,7 +264,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     /**
      * Sets the progress of a {@link Player} in completing this mission. When the progress matches or exceeds the
      * {@link #getMaxProgress()} when it previously didn't, the {@link Player} is rewarded with {@link #getReward()}.
-     * <br /><br />
+     * <br><br>
      * If a {@link Player} completes a mission, but then their progress is reset to an amount below the
      * {@link #getMaxProgress()} amount, they have the potential to earn duplicate rewards.
      * @param p The {@link Player} to set the progress of.
@@ -292,7 +292,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     /**
      * Increments the progress of a {@link Player} in completing this mission. When the progress matches or exceeds the
      * {@link #getMaxProgress()} when it previously didn't, the {@link Player} is rewarded with {@link #getReward()}.
-     * <br /><br />
+     * <br><br>
      * If a {@link Player} completes a mission, but then their progress is incremented to an amount below the
      * {@link #getMaxProgress()} amount, they have the potential to earn duplicate rewards.
      * @param p The {@link Player} to set the progress of.
@@ -331,7 +331,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     /**
      * Register's a {@link Player}'s unique id to the database. This will allow the server to listen to the
      * database for changes to data regarding the {@link Player}.
-     * <br /><br />
+     * <br><br>
      * Always be sure to call {@link #unregisterPlayerDataListener(UUID)} later to avoid listener leaks leading to
      * potential $$$ overcharges.
      * @param uuid The unique id of the {@link Player}
@@ -346,7 +346,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     /**
      * Unregister's a {@link Player}'s unique id to the database. This tells the server to stop listening to the
      * database for changes to data regarding the {@link Player}.
-     * <br /><br />
+     * <br><br>
      * Always be sure to call this after calling {@link #registerPlayerDataListener(UUID)} to avoid listener leaks
      * leading to potential $$$ overcharges.
      * @param uuid The unique id of the {@link Player}

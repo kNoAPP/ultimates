@@ -139,7 +139,7 @@ public class ForceLevitationCard extends Card {
         }
     }
 
-    /**
+    /*
      * If this is firing before the InteractEvent down the road for
      * some reason, you'll get the levitation wand launching blocks
      * it should be dropping. You can fix this by making a BukkitTask
@@ -149,6 +149,7 @@ public class ForceLevitationCard extends Card {
      * Alternative, mount a slime of size 2 on the player's head
      * and check the EntityDamageByEntityEvent
      */
+
     @EventHandler
     public void onAnimation(PlayerAnimationEvent e) {
         Player p = e.getPlayer();

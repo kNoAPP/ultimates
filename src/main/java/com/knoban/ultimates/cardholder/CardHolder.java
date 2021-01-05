@@ -199,7 +199,8 @@ public class CardHolder extends Holder {
 
     /**
      * Opens a GUI for the CardHolder to draw or discard from their owned cards
-     * @param page - The page number to open containing their owned cards
+     * @param showTo The player to show the deck to
+     * @param page The page number to open containing their owned cards
      */
     public void openYourDeckGUI(@NotNull Player showTo, final int page) {
         openYourDeckGUI(showTo, page, true);
@@ -694,6 +695,7 @@ public class CardHolder extends Holder {
 
     /**
      * To be called when a CardHolder logs out
+     * @param shutdown Was the logout due to a shutdown?
      */
     public void logout(boolean shutdown) {
         players.remove(player);

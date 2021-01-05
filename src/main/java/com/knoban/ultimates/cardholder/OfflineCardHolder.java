@@ -40,10 +40,10 @@ public class OfflineCardHolder extends Holder {
     /**
      * Get a OfflineCardHolder instance given a Player instance
      * OfflineCardHolders are not cached, so you may call this as many times as needed
-     * <br /><br />
+     * <br><br>
      * DO NOT STORE OfflineCardHolders! They are unloaded after the callback is used.
      * Callback is run on its the main Bukkit game thread. This object should only be used for DB read/write.
-     * <br /><br />
+     * <br><br>
      * This call does not use a mutex and will not save changes. Read only!
      *
      * @param plugin - An instance of the Ultimates plugin
@@ -71,10 +71,10 @@ public class OfflineCardHolder extends Holder {
     /**
      * Get a OfflineCardHolder instance given a Player instance
      * OfflineCardHolders are not cached, so you may call this as many times as needed
-     * <br /><br />
+     * <br><br>
      * DO NOT STORE OfflineCardHolders! They are unloaded after the callback is used.
      * Callback is run on its the main Bukkit game thread. This object should only be used for DB read/write.
-     * <br /><br />
+     * <br><br>
      * This call uses a mutex. By using a mutex, you can ensure data consistency when writing.
      *
      * @param plugin - An instance of the Ultimates plugin

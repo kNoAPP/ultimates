@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * This class performs a fluid boss bar animation between multiple or single calls to the animation. For example,
  * a single request to perform an animation with do just that: perform the animation. Multiple calls will not restart
  * an ongoing animation, but it will dynamically adapt them with the new passed values.
- * <br /><br />
+ * <br><br>
  * The intent of this class is to provide fluid, good looking UI mainly for the use of {@link com.knoban.ultimates.missions.Mission}s.
  *
  * @author Alden Bansemer (kNoAPP)
