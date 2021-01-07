@@ -1,6 +1,7 @@
 # Some tips to help out:
-# - Don't use the service account URL for your DatabaseURL! Instead, use the project name.
-#   If done right, it will look something like https://abcd-1234.firebaseio.com/
+# - Don't use the service account URL for your DatabaseURL! Instead, use the Realtime Database url.
+#   If done right, it will look something like https://abcd-1234-default-rtdb.firebaseio.com/
+#   You can find the exact URL in Firebase. Go to Firebase -> Build -> Realtime Database -> Look for the link.
 # - AFKFishing is disabled by default, because people shouldn't be able to afk-cheat goods.
 Version: ${project.version}
 Firebase:

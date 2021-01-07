@@ -7,6 +7,7 @@ import com.knoban.ultimates.aspects.Message;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.cardholder.OfflineCardHolder;
 import com.knoban.ultimates.cards.Card;
+import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.commands.parsables.CardParsable;
 import com.knoban.ultimates.permissions.PermissionConstants;
 import org.bukkit.Bukkit;
@@ -53,6 +54,13 @@ public class CardCommandHandle {
         }
     }
 
+    @AtlasCommand(paths = {"card grant <?> all"}, permission = PermissionConstants.ULTS_CARD_GRANT, classPriority = 1)
+    public void cmdCardGrant(CommandSender sender, Player target) {
+        for(Card card : Cards.getInstance().getCardInstances()) {
+            cmdCardGrant(sender, target, card);
+        }
+    }
+
     @AtlasCommand(paths = {"card grant"}, permission = PermissionConstants.ULTS_CARD_GRANT)
     public void cmdCardGrant(CommandSender sender, String target, Card card) {
         OfflineCardHolder.getOfflineCardHolder(plugin, target, -1, (success, tch) -> {
@@ -65,6 +73,13 @@ public class CardCommandHandle {
             } else
                 sender.sendMessage("§4" + target + " §c's data cannot be reached. Usually means this player is online another Ultimates server.");
         });
+    }
+
+    @AtlasCommand(paths = {"card grant <?> all"}, permission = PermissionConstants.ULTS_CARD_GRANT)
+    public void cmdCardGrant(CommandSender sender, String target) {
+        for(Card card : Cards.getInstance().getCardInstances()) {
+            cmdCardGrant(sender, target, card);
+        }
     }
 
     @AtlasCommand(paths = {"card revoke"}, permission = PermissionConstants.ULTS_CARD_REVOKE, classPriority = 1)

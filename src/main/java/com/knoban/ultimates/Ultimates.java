@@ -150,6 +150,7 @@ public class Ultimates extends JavaPlugin {
 		new LevelCommandHandle(this);
 		new BattlePassCommandHandle(this);
 		new WisdomCommandHandle(this);
+		new CardSlotCommandHandle(this);
 		new CardpackCommandHandle(this);
 		new EstateCommandHandle(this);
 		new SoundgenCommandHandle(this);

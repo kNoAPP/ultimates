@@ -272,12 +272,12 @@ public class CardHolder extends Holder {
 
         // Pointers
         gui.setSlot(45, Items.CARD_POINTER);
-        gui.setSlot(51, Items.ULTIMATE_POINTER_L);
-        gui.setSlot(53, Items.ULTIMATE_POINTER_R);
 
         addDrawnBar(showTo, gui, page);
 
         // TODO Add ultimate card here in slot 52.
+        // gui.setSlot(51, Items.ULTIMATE_POINTER_L);
+        // gui.setSlot(53, Items.ULTIMATE_POINTER_R);
 
         gui.openInv(showTo);
     }
@@ -329,7 +329,7 @@ public class CardHolder extends Holder {
     private void addDrawnBar(@NotNull Player showTo, @NotNull GUI gui, final int page) {
         // Drawn Abilities
         final int drawnSlot = 46;
-        final int guiSlots = Math.min(getMaxCardSlots(), 5);
+        final int guiSlots = Math.min(getMaxCardSlots(), 8);
         for(int i=0; i<guiSlots; i++) {
             if(i < drawnCards.size()) {
                 Card card = drawnCards.get(i);
@@ -339,7 +339,7 @@ public class CardHolder extends Holder {
                 gui.setSlot(drawnSlot+i, Items.CARD_SLOT_OPEN);
         }
 
-        for(int i=guiSlots; i<5; i++) {
+        for(int i=guiSlots; i<8; i++) {
             gui.setSlot(drawnSlot+i, Items.CARD_SLOT_LOCKED);
         }
     }
