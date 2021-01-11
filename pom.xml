@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>com.knoban</groupId>
 			<artifactId>atlas</artifactId>
-			<version>0.1.0.0</version>
+			<version>0.1.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
