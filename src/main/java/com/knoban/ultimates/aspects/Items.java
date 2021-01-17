@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -412,7 +413,7 @@ public class Items {
 		return new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
 	}
 
-	public static boolean isLocked(ItemStack is) {
+	public static boolean isLocked(@Nullable ItemStack is) {
 		if(is != null) {
 			ItemMeta im = is.getItemMeta();
 			if(im != null) {

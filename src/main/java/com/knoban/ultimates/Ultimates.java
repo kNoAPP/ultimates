@@ -32,6 +32,16 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Ultimates! Get cards, unlock special abilities, collect them all. Each card gives you a unique effect ingame.
+ * Join a primal, claim some land, start some conflict. Use your cards to get an edge on other players.
+ * <br><br>
+ * This project was written for GodComplex LLC. This copy of code is a branch of Ultimates containing all of
+ * Alden's solo work before the game was picked up and maintained by the rest of the team. It serves the purpose
+ * of being an NDA'd Java profile piece considering the scale of the game. (2019-2021)
+ *
+ * @author Alden Bansemer (kNoAPP)
+ */
 public class Ultimates extends JavaPlugin {
 
 	private YML config;
@@ -145,7 +155,6 @@ public class Ultimates extends JavaPlugin {
 		new UltimatesCommandHandle(this);
 		new RecallCommandHandle(this);
 		new CardCommandHandle(this);
-		new ChunkCommandHandle(this);
 		new FlashCommandHandle(this);
 		new LevelCommandHandle(this);
 		new BattlePassCommandHandle(this);

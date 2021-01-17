@@ -7,6 +7,7 @@ import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.aspects.Items;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.Cards;
+import com.knoban.ultimates.cards.base.Silenceable;
 import com.knoban.ultimates.primal.PrimalSource;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -149,6 +150,23 @@ public class CardHolder extends Holder {
             card.discard(player);
         }
         return toRet;
+    }
+
+    /**
+     * Silences all cards in the game for a player. Silenced cards can be drawn and remain drawn, but their
+     * affects are not applied. Silencing persists automatically between logouts.
+     * <br>
+     * There's a more performance friendly version of silencing for silencable cards. If you'd like to silence
+     * specific cards for a player, check out {@link Silenceable} cards.
+     * @param silenced True, if the player should be silenced.
+     */
+    public void setSilenced(boolean silenced) {
+        for(Card card : Cards.getInstance().getCardInstances()) {
+            if(card instanceof Silenceable) {
+                Silenceable silenceable = (Silenceable) card;
+                silenceable.setSilenced(player, silenced);
+            }
+        }
     }
 
     public static final String UNLOADED_MESSAGE = "§cYour data is still loading. Please wait...";
@@ -687,7 +705,7 @@ public class CardHolder extends Holder {
             } else {
                 player.kickPlayer("§cFailed to load your CardHolder data, please try again!" +
                         "\n§cIf this problem continues, contact your server administrator." +
-                        "\n§cGive them this error code: §4ults-gC-3");
+                        "\n§cGive them this error code: §4ults-3");
             }
         });
     }
@@ -746,7 +764,7 @@ public class CardHolder extends Holder {
      * @param primal the {@link PrimalSource} to search for
      * @return all instances in the {@link PrimalSource}
      */
-    public Collection<CardHolder> getAllInPrimal(@NotNull PrimalSource primal) {
+    public static Collection<CardHolder> getAllInPrimal(@NotNull PrimalSource primal) {
         Set<CardHolder> result = new HashSet<>();
         forEachInPrimal(primal, result::add);
         return result;
@@ -761,7 +779,7 @@ public class CardHolder extends Holder {
      * @param action the action to execute for each matching instance
      * @return the amount of times the callback was called
      */
-    public int forEachInPrimal(@NotNull PrimalSource primal, Consumer<CardHolder> action) {
+    public static int forEachInPrimal(@NotNull PrimalSource primal, Consumer<CardHolder> action) {
         int counter = 0;
         for(CardHolder cardHolder : getCardHolders()) {
             if(cardHolder.getPrimalSource() == primal) {

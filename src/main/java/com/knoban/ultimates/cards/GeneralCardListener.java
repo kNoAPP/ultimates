@@ -10,6 +10,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 import java.util.EnumSet;
@@ -36,11 +37,12 @@ public class GeneralCardListener implements Listener {
     private static final EnumSet<ClickType> disabledOneInv = EnumSet.of(ClickType.CONTROL_DROP,
             ClickType.DROP, ClickType.NUMBER_KEY, ClickType.UNKNOWN, ClickType.WINDOW_BORDER_LEFT,
             ClickType.WINDOW_BORDER_RIGHT);
+
     @EventHandler
     public void onInventoryMove(InventoryClickEvent e) {
         if(Items.isLocked(e.getCurrentItem())) {
             if(e.getInventory() != null) {
-                if(disabledTwoInv.contains(e.getClick())) {
+                if(true || disabledTwoInv.contains(e.getClick())) { // TODO Remove 'true,' temporary, testing something.
                     e.setCancelled(true);
                     return;
                 }

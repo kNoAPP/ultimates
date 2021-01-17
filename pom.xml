@@ -7,7 +7,7 @@
 
 	<groupId>com.knoban</groupId>
 	<artifactId>ultimates</artifactId>
-	<version>0.1.2.0</version>
+	<version>0.1.3.0</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -15,12 +15,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>papermc</id>
-			<url>https://papermc.io/repo/repository/maven-public/</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<!--
 		To get this dependency to not have errors, please follow these instructions:
@@ -45,7 +39,7 @@
 		<dependency>
 			<groupId>com.knoban</groupId>
 			<artifactId>atlas</artifactId>
-			<version>0.1.1.0</version>
+			<version>0.1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->

@@ -224,21 +224,20 @@ public abstract class Card implements Listener {
         return toRet;
     }
 
+    /**
+     * @return True, if the card is enabled. False, if disabled
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * This will mark a card as disabled, but will not automatically discard active CardHolder cards.
+     * @param enabled True, if the card should be enabled. False, if disabled
+     */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         cacheItemStacks();
-
-        if(!enabled) {
-            for(Player p : new ArrayList<>(drawn)) {
-                CardHolder holder = CardHolder.getCardHolder(p);
-                if(holder.isLoaded())
-                    holder.discardCards(this);
-            }
-        }
     }
 
     /**

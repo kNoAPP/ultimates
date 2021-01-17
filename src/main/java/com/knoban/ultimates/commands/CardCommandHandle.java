@@ -133,6 +133,11 @@ public class CardCommandHandle {
                 pl.sendMessage("§4You had this card drawn. It has been temporarily discarded.");
             }
             card.setEnabled(false);
+            for(Player p : card.getDrawnPlayers()) {
+                CardHolder holder = CardHolder.getCardHolder(p);
+                if(holder.isLoaded())
+                    holder.discardCards(card);
+            }
         } else {
             Bukkit.broadcastMessage("§aAn admin has enabled the card: " + card.getInfo().display());
             card.setEnabled(true);

@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.CardInfo;
+import com.knoban.ultimates.cards.base.Silenceable;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
 import org.bukkit.Material;
@@ -20,7 +21,7 @@ import org.bukkit.event.EventPriority;
         source = PrimalSource.OCEAN,
         tier = Tier.RARE
 )
-public class AnchorCard extends Card {
+public class AnchorCard extends Card implements Silenceable {
 
     public AnchorCard(Ultimates plugin) {
         super(plugin);
@@ -31,7 +32,8 @@ public class AnchorCard extends Card {
         LivingEntity knockedBack = e.getEntity();
         Entity hitBy = e.getHitBy();
 
-        if(drawn.contains(knockedBack) || drawn.contains(hitBy))
+        if((drawn.contains(knockedBack) && !silencedPlayers.contains(knockedBack))
+                || (drawn.contains(hitBy) && !silencedPlayers.contains(hitBy)))
             e.setCancelled(true);
     }
 }

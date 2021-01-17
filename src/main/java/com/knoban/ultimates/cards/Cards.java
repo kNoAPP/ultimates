@@ -14,7 +14,7 @@ public final class Cards {
             ForceLevitationCard.class, StrangeBowCard.class, VeganCard.class, RubberProjectileCard.class,
             ZeroGravityProjectileCard.class, DeflectionCard.class, MagmaWalkerCard.class,
             SplashPotionOfGetHisAssCard.class, ScavengerCard.class, LumberjackCard.class, LuckCard.class, SoulCard.class,
-            FallCard.class, TwinsCard.class, EnlightenedCard.class, PokeCard.class, TeemoCard.class, FlashbangCard.class,
+            Fall.class, TwinsCard.class, EnlightenedCard.class, PokeCard.class, TeemoCard.class, FlashbangCard.class,
             DruidCard.class, XRayCard.class, PortalCard.class, JuggernautCard.class, TankCard.class, HotHandsCard.class,
             DryadsGiftCard.class, RunnersDietCard.class, TerrorCard.class, PantherCard.class, SpeedCard.class,
             SteadyHandsCard.class, AnchorCard.class, UnyieldingMightCard.class, FalconCard.class, ParleyCard.class,
