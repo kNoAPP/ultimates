@@ -1,7 +1,6 @@
 package com.knoban.ultimates.cards.helpers;
 
 import com.knoban.ultimates.Ultimates;
-import com.knoban.ultimates.cards.impl.AnchorCard;
 import com.knoban.ultimates.claims.UltimatesEstateListener;
 import org.bukkit.Material;
 import org.bukkit.Particle;

@@ -2,7 +2,6 @@ package com.knoban.ultimates.cards;
 
 import com.google.firebase.database.*;
 import com.knoban.ultimates.Ultimates;
-import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.events.CardDiscardEvent;
 import com.knoban.ultimates.events.CardDrawEvent;
 import com.knoban.ultimates.events.CardRegisterEvent;
