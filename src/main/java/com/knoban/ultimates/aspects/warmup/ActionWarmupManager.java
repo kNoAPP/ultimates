@@ -63,7 +63,7 @@ public final class ActionWarmupManager implements Listener {
 	 */
 	public void shutdown() {
 		for(Player player : new ArrayList<>(playerToTasks.keySet())) {
-			onQuit(new PlayerQuitEvent(player, null));
+			onQuit(new PlayerQuitEvent(player, (String) null));
 		}
 	}
 	

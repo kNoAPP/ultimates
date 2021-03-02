@@ -49,7 +49,7 @@ public class MoveCallbackManager implements Listener {
 	 */
 	public void shutdown() {
 		for(Player player : new ArrayList<>(entries.keySet())) {
-			onQuit(new PlayerQuitEvent(player, null));
+			onQuit(new PlayerQuitEvent(player, (String) null));
 		}
 	}
 	
