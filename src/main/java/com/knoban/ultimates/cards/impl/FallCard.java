@@ -20,9 +20,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
         source = PrimalSource.SKY,
         tier = Tier.RARE
 )
-public class Fall extends Card implements Silenceable {
+public class FallCard extends Card implements Silenceable {
 
-    public Fall(Ultimates plugin) {
+    public FallCard(Ultimates plugin) {
         super(plugin);
     }
 
@@ -31,7 +31,7 @@ public class Fall extends Card implements Silenceable {
     public void onPlayerDamage(EntityDamageEvent e) {
         if(e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
-            if(drawn.contains(p) && e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            if(drawn.contains(p) && !silencedPlayers.contains(p.getUniqueId()) && e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setDamage(0);
                 e.setCancelled(true);
             }

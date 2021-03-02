@@ -4,6 +4,7 @@ import co.aikar.timings.Timing;
 import co.aikar.timings.Timings;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.events.CombatEnterEvent;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -49,7 +50,7 @@ public class MoveCallbackManager implements Listener {
 	 */
 	public void shutdown() {
 		for(Player player : new ArrayList<>(entries.keySet())) {
-			onQuit(new PlayerQuitEvent(player, (String) null));
+			onQuit(new PlayerQuitEvent(player, (Component) null, PlayerQuitEvent.QuitReason.DISCONNECTED));
 		}
 	}
 	
