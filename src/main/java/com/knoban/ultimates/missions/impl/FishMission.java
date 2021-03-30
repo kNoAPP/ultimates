@@ -37,12 +37,12 @@ public class FishMission extends Mission {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onTrade(PlayerFishEvent e) {
+    public void onFish(PlayerFishEvent e) {
         if(e.getState() == PlayerFishEvent.State.CAUGHT_FISH && e.getCaught() != null) {
             Item item = (Item) e.getCaught();
             if(FISH.contains(item.getItemStack().getType())) {
                 Player p = e.getPlayer();
-                incrementProgress(p, 1);
+                incrementProgress(p, 1L);
             }
         }
     }

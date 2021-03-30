@@ -22,7 +22,7 @@ public class ItemStackReward extends Reward {
 
     public ItemStackReward(Map<String, Object> data) {
         super(data);
-        String materialName = (String) data.getOrDefault("material", "AIR");
+        String materialName = (String) data.getOrDefault("material", Material.AIR.name());
         this.material = Material.getMaterial(materialName);
         if(material == null)
             throw new IllegalArgumentException("Invalid material: " + materialName);
@@ -39,7 +39,7 @@ public class ItemStackReward extends Reward {
 
     private static ItemStack createIcon(Material mat, long amount) {
         int amt = (int) amount;
-        ItemStack icon = new ItemStack(mat, amt < 64 ? amt : 64);
+        ItemStack icon = new ItemStack(mat, Math.min(amt, 64));
         ItemMeta im = icon.getItemMeta();
         im.setDisplayName("§f" + amount + " " + Tools.enumNameToHumanReadable(mat.name()));
         im.setLore(Arrays.asList("§7You get this item drop."));

@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.Map;
 
 public abstract class Reward {
@@ -19,9 +20,9 @@ public abstract class Reward {
 
     protected Reward(Map<String, Object> data) {
         this.icon = Items.DEFAULT_REWARD_ITEM;
-        String tierName = (String) data.get("tier");
+        String tierName = (String) data.getOrDefault("tier", Tier.COMMON.name());
         if(tierName != null)
-            this.tier = Tier.valueOf(tierName);
+            this.tier = Tier.valueOf(tierName.toUpperCase());
         this.amount = (long) data.getOrDefault("amount", 1L);
         if(amount < 0)
             amount = 0;
