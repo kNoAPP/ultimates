@@ -1,16 +1,14 @@
 package com.knoban.ultimates.missions;
 
-import com.knoban.ultimates.missions.impl.BlockBreakMission;
-import com.knoban.ultimates.missions.impl.BlockPlaceMission;
-import com.knoban.ultimates.missions.impl.FishMission;
-import com.knoban.ultimates.missions.impl.KillEntityMission;
+import com.knoban.ultimates.missions.impl.*;
 
 import java.util.*;
 
 public final class Missions {
 
     private static final List<Class<? extends Mission>> missions = Collections.unmodifiableList(Arrays.asList(
-            BlockBreakMission.class, BlockPlaceMission.class, KillEntityMission.class, FishMission.class
+            BlockBreakMission.class, BlockPlaceMission.class, KillEntityMission.class, FishMission.class,
+            DestinationMission.class
     ));
 
     private final Map<String, Class<? extends Mission>> missionByName;

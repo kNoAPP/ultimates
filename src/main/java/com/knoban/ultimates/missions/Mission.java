@@ -317,6 +317,17 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     }
 
     /**
+     * Gets the progress of a {@link Player} in completing this mission. This will return null if the {@link Player} is
+     * offline or their data has not yet loaded.
+     * @param p The {@link Player} to get the progress of.
+     * @return A Long representing the amount of progress the player has made in this mission. Null if the data is unavailable.
+     */
+    @Nullable
+    public Long getProgress(@NotNull Player p) {
+        return progressMap.get(p.getUniqueId());
+    }
+
+    /**
      * Helper thread to handle boss bar animation and grant rewards.
      */
     private void incrementProgressAnimation(@NotNull Player p, @NotNull CardHolder holder, long oldValue, long newValue) {
@@ -395,7 +406,7 @@ public abstract class Mission implements Listener, Comparable<Mission> {
     }
 
     /**
-     * @return Trye, if the mission is active and can be completed by players.
+     * @return True, if the mission is active and can be completed by players.
      */
     public boolean isActive() {
         return active;

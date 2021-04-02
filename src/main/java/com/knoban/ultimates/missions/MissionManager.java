@@ -101,8 +101,8 @@ public class MissionManager implements Listener {
                     .getConstructor(Ultimates.class, String.class, Map.class)
                     .newInstance(plugin, missionId, missionData);
         } catch(Exception e) {
-            plugin.getLogger().warning("Failed to create mission (" + missionId + "): " + type);
-            e.printStackTrace();
+            plugin.getLogger().warning("Failed to create mission (" + missionId + "): " + type + " [" + e.getMessage() + "]");
+            plugin.getLogger().warning("This was likely caused by an incorrect manual entry to Firebase. You can safely ignore this warning.");
             return;
         }
 
