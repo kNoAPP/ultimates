@@ -7,6 +7,7 @@ import com.google.cloud.firestore.*;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.knoban.atlas.callbacks.GenericCallback1;
 import com.knoban.atlas.claims.Landlord;
+import com.knoban.atlas.data.firebase.AtlasFirebaseMutex;
 import com.knoban.atlas.structure.HashSetArrayList;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardpack.CardPack;
@@ -24,7 +25,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-public abstract class Holder {
+public abstract class Holder extends AtlasFirebaseMutex {
 
     protected final Ultimates plugin;
     protected final UUID uuid;
@@ -36,24 +37,20 @@ public abstract class Holder {
     protected HashSetArrayList<Card> drawnCards = new HashSetArrayList<>();
     protected ArrayList<Integer> ownedCardPacks = new ArrayList<>(CardPack.values().length);
 
-    private String thisMutex;
-    private ListenerRegistration mutexListener;
-    private Thread timeout;
-
     protected boolean loaded, battlePass;
     protected int timePlayed, maxEstateClaims, maxCardSlots, xp, maxFreeRewardedLevel, maxPremiumRewardedLevel, wisdom;
     protected long lastSeen;
 
-    private final DocumentReference firestoreReference;
-
     protected Holder(@NotNull Ultimates plugin, @NotNull UUID uuid, @NotNull String name) {
+        super(plugin.getFirebase().getFirestore(),
+                plugin.getFirebase().getFirestore().collection("cardholder").document(uuid.toString()),
+                plugin.getLogger());
+
         this.plugin = plugin;
         this.uuid = uuid;
         this.name = name;
         this.landlord = plugin.getLandManager().getLandlord(uuid);
         this.loaded = false;
-
-        this.firestoreReference = plugin.getFirebase().getFirestore().collection("cardholder").document(uuid.toString());
     }
 
     /**
@@ -580,8 +577,6 @@ public abstract class Holder {
      * (or null if none)
      */
     protected void save(boolean block, @Nullable GenericCallback1<Boolean> callback) {
-        Firestore store = plugin.getFirebase().getFirestore();
-
         Map<String, Object> update = new TreeMap<>();
         update.put("username", name);
         update.put("lastSeen", System.currentTimeMillis());
@@ -629,154 +624,6 @@ public abstract class Holder {
         }
 
         loaded = false;
-    }
-
-    private void addMutex(GenericCallback1<Boolean> callback) {
-        if(thisMutex != null)
-            return;
-
-        thisMutex = UUID.randomUUID().toString();
-
-        ApiFuture<Void> future = plugin.getFirebase().getFirestore().runTransaction(transaction -> {
-            DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
-            ArrayList<String> mutex = (ArrayList<String>) snapshot.get("mutex");
-            if(mutex == null)
-                mutex = new ArrayList<>();
-            mutex.add(thisMutex);
-            Map<String, Object> map = new TreeMap<>();
-            map.put("mutex", mutex);
-            transaction.set(firestoreReference, map, SetOptions.merge());
-            return null;
-        });
-
-        ApiFutures.addCallback(future, new ApiFutureCallback<Void>() {
-            @Override
-            public void onFailure(Throwable t) {
-                plugin.getLogger().warning("Failed to create Holder mutex: " + t.getMessage());
-                callback.call(false);
-            }
-
-            @Override
-            public void onSuccess(Void result) {
-                callback.call(true);
-            }
-        }, MoreExecutors.directExecutor());
-    }
-
-    private void clearMutex() {
-        if(thisMutex == null)
-            return;
-
-        plugin.getFirebase().getFirestore().runTransaction(transaction -> {
-            DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
-            ArrayList<String> mutex = (ArrayList<String>) snapshot.get("mutex");
-            if(mutex == null)
-                mutex = new ArrayList<>();
-            mutex.clear();
-            mutex.add(thisMutex);
-            Map<String, Object> map = new TreeMap<>();
-            map.put("mutex", mutex);
-            transaction.set(firestoreReference, map, SetOptions.merge());
-            return null;
-        });
-    }
-
-    protected void removeMutex(boolean block) {
-        if(thisMutex == null)
-            return;
-
-        ApiFuture<Void> future = plugin.getFirebase().getFirestore().runTransaction(transaction -> {
-            DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
-            ArrayList<String> mutex = (ArrayList<String>) snapshot.get("mutex");
-            if(mutex == null)
-                mutex = new ArrayList<>();
-            mutex.remove(thisMutex);
-            Map<String, Object> map = new TreeMap<>();
-            map.put("mutex", mutex);
-            transaction.set(firestoreReference, map, SetOptions.merge());
-            return null;
-        });
-
-        if(block) {
-            try {
-                future.get();
-                thisMutex = null;
-            } catch(InterruptedException | ExecutionException e) {
-                plugin.getLogger().warning("Failed to remove Holder mutex: " + e.getMessage());
-                thisMutex = null;
-            }
-        } else {
-            ApiFutures.addCallback(future, new ApiFutureCallback<Void>() {
-                @Override
-                public void onFailure(Throwable t) {
-                    plugin.getLogger().warning("Failed to remove Holder mutex: " + t.getMessage());
-                    thisMutex = null;
-                }
-
-                @Override
-                public void onSuccess(Void result) {
-                    thisMutex = null;
-                }
-            }, MoreExecutors.directExecutor());
-        }
-    }
-
-    private void listenToMutex(long timeoutMillis, boolean karen, GenericCallback1<Boolean> callback) {
-        if(thisMutex == null)
-            return;
-
-        this.timeout = new Thread(() -> {
-            try {
-                Thread.sleep(timeoutMillis);
-            } catch(InterruptedException e) {
-                return;
-            }
-
-            mutexListener.remove();
-            if(karen) {
-                plugin.getLogger().warning(name + "'s Holder data has been force-loaded. Possible data inconsistencies may now occur.");
-                clearMutex();
-                callback.call(true);
-            } else {
-                removeMutex(false);
-                callback.call(false);
-            }
-        });
-
-        this.mutexListener = firestoreReference.addSnapshotListener((value, error) -> {
-            if(error != null) {
-                plugin.getLogger().warning("Failed to listen for mutex: " + error.getMessage());
-                mutexListener.remove();
-                timeout.interrupt();
-                removeMutex(false); // Try to clean up if possible.
-                callback.call(false);
-                return;
-            }
-
-            if(value != null) {
-                Map<String, Object> data = value.getData();
-                ArrayList<String> mutex = (ArrayList<String>) data.get("mutex");
-                if(mutex == null || thisMutex == null || !mutex.contains(thisMutex)) {
-                    mutexListener.remove();
-                    timeout.interrupt();
-                    callback.call(false);
-                    return;
-                }
-
-                if(mutex.get(0).equals(thisMutex)) {
-                    timeout.interrupt();
-                    mutexListener.remove();
-                    callback.call(true);
-                    return;
-                }
-            }
-
-            // This lets us check once for our mutex before starting the timer.
-            // Preferable because we don't risk unnecessarily clearing the mutex.
-            // Don't use a hammer for a screw. Use a screwdriver.
-            if(timeoutMillis >= 0 && timeout.getState() == Thread.State.NEW)
-                timeout.start();
-        });
     }
 
     /**
