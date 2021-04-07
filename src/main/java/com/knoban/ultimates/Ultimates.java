@@ -9,6 +9,7 @@ import com.knoban.ultimates.aspects.*;
 import com.knoban.ultimates.aspects.warmup.ActionWarmupManager;
 import com.knoban.ultimates.battlepass.BattlePassManager;
 import com.knoban.ultimates.cardholder.CardHolder;
+import com.knoban.ultimates.cardholder.Holder;
 import com.knoban.ultimates.cardholder.OfflineCardHolder;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.Cards;
@@ -108,10 +109,8 @@ public class Ultimates extends JavaPlugin {
 		config = new YML(this, "/config.yml");
 		FileConfiguration fc = config.getCachedYML();
 
-		if(config.wasCreated()) {
-			fc.set("uuid", UUID.randomUUID().toString());
-			config.saveYML();
-		}
+		Holder.setCardsDrawOnLoadSaveOnUnload(fc.getBoolean("Cards.Draw-On-Load-Save-On-Unload", true));
+		CardHolder.setPrimalsUseScoreboard(fc.getBoolean("Primals.Use-Scoreboard", true));
 
 		try {
 			firebase = new AtlasFirebase(fc.getString("Firebase.DatabaseURL"), new File(getDataFolder(),
@@ -137,6 +136,8 @@ public class Ultimates extends JavaPlugin {
 		
 		getLogger().info("Importing aspects...");
 
+		FileConfiguration fc = config.getCachedYML();
+
 		ACAPI.getApi().addParser(PrimalSource.class, new PrimalSourceParsable());
 
 		lpdsm = new LocalPDStoreManager(this);
@@ -150,19 +151,31 @@ public class Ultimates extends JavaPlugin {
 		gcl = new GeneralCardListener(this);
 
 		new GeneralListener(this);
-		new HelperSuggestionsListener(this);
+		if(fc.getBoolean("Tutorial.Helpful-Suggestions", true))
+			new HelperSuggestionsListener(this);
 
-		new UltimatesCommandHandle(this);
-		new RecallCommandHandle(this);
-		new CardCommandHandle(this);
-		new FlashCommandHandle(this);
-		new LevelCommandHandle(this);
-		new BattlePassCommandHandle(this);
-		new WisdomCommandHandle(this);
-		new CardSlotCommandHandle(this);
-		new CardpackCommandHandle(this);
-		new EstateCommandHandle(this);
-		new SoundgenCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.BattlePass", true))
+			new BattlePassCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Card", true))
+			new CardCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.CardPack", true))
+			new CardPackCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.CardSlot", true))
+			new CardSlotCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Estate", true))
+			new EstateCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Flash", true))
+			new FlashCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Level", true))
+			new LevelCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Recall", true))
+			new RecallCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Soundgen", true))
+			new SoundgenCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Ultimates", true))
+			new UltimatesCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Wisdom", true))
+			new WisdomCommandHandle(this);
 
 		for(Player pl : Bukkit.getOnlinePlayers()) {
 			CardHolder.getCardHolder(pl).login();

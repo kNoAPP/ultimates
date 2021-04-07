@@ -22,6 +22,8 @@ import java.util.function.Consumer;
 
 public class CardHolder extends Holder {
 
+    private static boolean primalsUseScoreboard = true;
+
     private static final HashMap<Player, CardHolder> players = new HashMap<>();
 
     private final Player player;
@@ -53,6 +55,11 @@ public class CardHolder extends Holder {
 
     @Override
     public void setPrimalSource(PrimalSource primalSource) {
+        if(!primalsUseScoreboard) {
+            super.setPrimalSource(primalSource);
+            return;
+        }
+
         this.primalSource.getTeam().removeEntry(player.getName());
         super.setPrimalSource(primalSource);
         this.primalSource.getTeam().addEntry(player.getName());
@@ -698,7 +705,8 @@ public class CardHolder extends Holder {
                         player.sendMessage("§4You had this card drawn. It has been temporarily discarded.");
                     }
                 }
-                primalSource.getTeam().addEntry(player.getName());
+                if(primalsUseScoreboard)
+                    primalSource.getTeam().addEntry(player.getName());
 
                 plugin.getMissionManager().registerDataListener(uuid);
                 checkForRewardFromBattlePass();
@@ -728,7 +736,8 @@ public class CardHolder extends Holder {
             ongoingFlash.invalidate();
 
         drawnCards.forEach((c) -> c.discard(player));
-        primalSource.getTeam().removeEntry(player.getName());
+        if(primalsUseScoreboard)
+            primalSource.getTeam().removeEntry(player.getName());
 
         save(shutdown, null);
     }
@@ -788,5 +797,21 @@ public class CardHolder extends Holder {
             }
         }
         return counter;
+    }
+
+    /**
+     * Should a CardHolder's cards place them on a specific team automatically and display that in the tab list?
+     * @return True, if they should. False if they shouldn't
+     */
+    public static boolean isPrimalsUseScoreboard() {
+        return primalsUseScoreboard;
+    }
+
+    /**
+     * Set if a CardHolder's cards place them on a specific team automatically and display that in the tab list.
+     * @param primalsUseScoreboard True, if you want teams enabled based on cards.
+     */
+    public static void setPrimalsUseScoreboard(boolean primalsUseScoreboard) {
+        CardHolder.primalsUseScoreboard = primalsUseScoreboard;
     }
 }

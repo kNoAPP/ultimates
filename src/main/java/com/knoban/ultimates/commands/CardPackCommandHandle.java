@@ -14,16 +14,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CardpackCommandHandle {
+public class CardPackCommandHandle {
 
     private final Ultimates plugin;
 
-    public CardpackCommandHandle(Ultimates plugin) {
+    public CardPackCommandHandle(Ultimates plugin) {
         this.plugin = plugin;
 
         ACAPI api = ACAPI.getApi();
         api.addParser(CardPack.class, new CardPackParsable());
-        api.registerCommandsFromClass(plugin, CardpackCommandHandle.class, this);
+        api.registerCommandsFromClass(plugin, CardPackCommandHandle.class, this);
     }
 
     @AtlasCommand(paths = {"cardpack", "cardpack help", "cardpack help 1"})

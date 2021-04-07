@@ -24,7 +24,7 @@ public class CardCommandHandle {
 
         ACAPI api = ACAPI.getApi();
         api.addParser(Card.class, new CardParsable());
-        ACAPI.getApi().registerCommandsFromClass(plugin, CardCommandHandle.class, this);
+        api.registerCommandsFromClass(plugin, CardCommandHandle.class, this);
     }
 
     @AtlasCommand(paths = {"card", "card help", "card help 1"})

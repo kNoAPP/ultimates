@@ -45,7 +45,7 @@ public class FlashCommandHandle {
 			} else
 				sender.sendMessage("§cYou need at least one card drawn to flash!");
 		} else {
-			sender.sendMessage("§cYou can flash cards in §4" + cd.toTimestampString() + " seconds§c.");
+			sender.sendMessage("§cYou can flash cards in §4" + cd.toTimestampString() + "§c.");
 		}
 	}
 }

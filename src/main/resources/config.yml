@@ -1,10 +1,47 @@
-# Some tips to help out:
-# - Don't use the service account URL for your DatabaseURL! Instead, use the Realtime Database url.
+# This configuration file is read once at startup, but then never again. If you make changes, please restart
+# the server to see them go live.
+#
+# Firebase: Don't use the service account URL for your DatabaseURL! Instead, use the Realtime Database url.
 #   If done right, it will look something like https://abcd-1234-default-rtdb.firebaseio.com/
 #   You can find the exact URL in Firebase. Go to Firebase -> Build -> Realtime Database -> Look for the link.
-# - AFKFishing is disabled by default, because people shouldn't be able to afk-cheat goods.
+#
+# Command-Toggle: Should these commands be enabled?
+
+# Cards.Draw-On-Load-Save-On-Unload: Should we draw a player's drawnCards on login and save on exit? Or they log in
+#    with 0 cards drawn and not save their drawn cards on exit?
+#
+# Primals.Use-Scoreboard: Should we use the server scoreboard to display Primals and create teams?
+#
+# Tutorial.Helpful-Suggestions: Should we hint suggestions towards new players on how to play the game?
+#
+# Store-URL: What store link should we advertise for the battle pass?
+#
+# AllowAFKFishing: Should we let players AFK fish for high tier loot, or should we give them regular loot for extended
+#    fishing?
+#
+# Free-Respawns: For first time players, how many times can they die and keep their items as a safety measure?
 Version: ${project.version}
 Firebase:
   DatabaseURL: 'https://<DATABASE_NAME>.firebaseio.com/'
   Key: 'key.json'
+Command-Toggle:
+  BattlePass: true
+  Card: true
+  CardPack: true
+  CardSlot: true
+  Estate: true
+  Flash: true
+  Level: true
+  Recall: true
+  Soundgen: true
+  Ultimates: true
+  Wisdom: true
+Cards:
+  Draw-On-Load-Save-On-Unload: true
+Primals:
+  Use-Scoreboard: true
+Tutorial:
+  Helpful-Suggestions: true
+Store-URL: 'https://store.godcomplex.org'
 AllowAFKFishing: false
+Free-Respawns: 1

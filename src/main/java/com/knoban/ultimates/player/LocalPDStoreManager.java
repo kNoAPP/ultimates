@@ -60,7 +60,7 @@ public class LocalPDStoreManager {
         UUID uuid = player.getUniqueId();
         LocalPDStore pds = getPlayerDataStore(uuid);
         if(pds == null) {
-            pds = new LocalPDStore(player);
+            pds = new LocalPDStore(player, plugin.getConfigFile().getCachedYML().getInt("Free-Respawns", 1));
             cachedPds.put(uuid, pds);
         }
 

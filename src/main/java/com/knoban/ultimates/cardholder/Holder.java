@@ -41,6 +41,8 @@ public abstract class Holder extends AtlasFirebaseMutex {
     protected int timePlayed, maxEstateClaims, maxCardSlots, xp, maxFreeRewardedLevel, maxPremiumRewardedLevel, wisdom;
     protected long lastSeen;
 
+    private static boolean cardsDrawOnLoadSaveOnUnload = true;
+
     protected Holder(@NotNull Ultimates plugin, @NotNull UUID uuid, @NotNull String name) {
         super(plugin.getFirebase().getFirestore(),
                 plugin.getFirebase().getFirestore().collection("cardholder").document(uuid.toString()),
@@ -524,10 +526,12 @@ public abstract class Holder extends AtlasFirebaseMutex {
                     battlePass = (boolean) values.getOrDefault("battlePass", false);
                     wisdom = ((Long) values.getOrDefault("wisdom", 0L)).intValue();
 
-                    for(String cardName : (Iterable<String>) values.getOrDefault("drawnCards", Collections.emptyList())) {
-                        Card card = Cards.getInstance().getCardInstance(cardName);
-                        if(card != null) { //silent skip: it will get logged when "ownedCards" are parsed
-                            toDraw.add(card);
+                    if(cardsDrawOnLoadSaveOnUnload) {
+                        for(String cardName : (Iterable<String>) values.getOrDefault("drawnCards", Collections.emptyList())) {
+                            Card card = Cards.getInstance().getCardInstance(cardName);
+                            if(card != null) { //silent skip: it will get logged when "ownedCards" are parsed
+                                toDraw.add(card);
+                            }
                         }
                     }
 
@@ -589,7 +593,8 @@ public abstract class Holder extends AtlasFirebaseMutex {
         update.put("xp", xp);
         update.put("battlePass", battlePass);
         update.put("wisdom", wisdom);
-        update.put("drawnCards", drawnCards.stream().map(Card::getInfo).map(CardInfo::name).collect(Collectors.toList()));
+        if(cardsDrawOnLoadSaveOnUnload)
+            update.put("drawnCards", drawnCards.stream().map(Card::getInfo).map(CardInfo::name).collect(Collectors.toList()));
         update.put("ownedCards", ownedCards.stream().map(Card::getInfo).map(CardInfo::name).collect(Collectors.toList()));
         update.put("ownedCardPacks", ownedCardPacks);
 
@@ -642,6 +647,22 @@ public abstract class Holder extends AtlasFirebaseMutex {
      */
     public static int getXpFromLevel(int level) {
         return level * 1000;
+    }
+
+    /**
+     * Should a {@link Holder}'s cards draw when loaded?
+     * @return True, if they should. False if they shouldn't
+     */
+    public static boolean isCardsDrawOnLoadSaveOnUnload() {
+        return cardsDrawOnLoadSaveOnUnload;
+    }
+
+    /**
+     * Set if a Holder's cards draw when they log in.
+     * @param cardsDrawOnLoadSaveOnUnload True, if cards should be drawn on load and saved on unload
+     */
+    public static void setCardsDrawOnLoadSaveOnUnload(boolean cardsDrawOnLoadSaveOnUnload) {
+        Holder.cardsDrawOnLoadSaveOnUnload = cardsDrawOnLoadSaveOnUnload;
     }
 
     @Override

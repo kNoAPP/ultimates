@@ -208,7 +208,7 @@ public class BattlePassManager {
                 showTo.closeInventory();
                 showTo.playSound(showTo.getLocation(), Sound.ENTITY_WANDERING_TRADER_REAPPEARED, 1F, 1F);
                 showTo.sendMessage("§6§lBuy the Battle Pass! §fVisit our store at:");
-                showTo.sendMessage("§bhttps://store.godcomplex.org");
+                showTo.sendMessage("§b" + plugin.getConfigFile().getCachedYML().getString("Store-URL", "https://example.com/store"));
             });
             gui.setSlot(40, Items.BATTLEPASS_PURCHASE_PASS, purchasePass);
         }
