@@ -1,13 +1,17 @@
 package com.knoban.ultimates;
 
+import com.knoban.atlas.battlepass.BattlePassManager;
 import com.knoban.atlas.claims.GenericEstateListener;
 import com.knoban.atlas.claims.LandManager;
 import com.knoban.atlas.commandsII.ACAPI;
 import com.knoban.atlas.data.firebase.AtlasFirebase;
 import com.knoban.atlas.data.local.DataHandler.YML;
+import com.knoban.atlas.missions.MissionManager;
+import com.knoban.atlas.missions.Missions;
+import com.knoban.atlas.missions.bossbar.BossBarAnimationHandler;
+import com.knoban.atlas.rewards.Rewards;
 import com.knoban.ultimates.aspects.*;
 import com.knoban.ultimates.aspects.warmup.ActionWarmupManager;
-import com.knoban.ultimates.battlepass.BattlePassManager;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.cardholder.Holder;
 import com.knoban.ultimates.cardholder.OfflineCardHolder;
@@ -17,11 +21,10 @@ import com.knoban.ultimates.cards.GeneralCardListener;
 import com.knoban.ultimates.claims.UltimatesEstateListener;
 import com.knoban.ultimates.commands.*;
 import com.knoban.ultimates.commands.parsables.PrimalSourceParsable;
-import com.knoban.ultimates.missions.MissionManager;
-import com.knoban.ultimates.missions.bossbar.BossBarAnimationHandler;
 import com.knoban.ultimates.player.LocalPDStoreManager;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
+import com.knoban.ultimates.rewards.*;
 import com.knoban.ultimates.tutorial.HelperSuggestionsListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,7 +33,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -145,8 +147,10 @@ public class Ultimates extends JavaPlugin {
 		moveCallbackManager = new MoveCallbackManager(this);
 		actionWarmupManager = new ActionWarmupManager(this);
 		bossBarAnimationHandler = new BossBarAnimationHandler(this);
-		battlepassManager = new BattlePassManager(this);
-		missionManager = new MissionManager(this);
+		registerMissionsToAtlas();
+		registerRewardsToAtlas();
+		battlepassManager = new BattlePassManager(this, firebase, "/battlepass");
+		missionManager = new MissionManager(this, firebase, "/missions");
 		aloha = new AlohaListener(this);
 		gcl = new GeneralCardListener(this);
 
@@ -181,6 +185,20 @@ public class Ultimates extends JavaPlugin {
 			CardHolder.getCardHolder(pl).login();
 			aloha.join(pl);
 		}
+	}
+
+	private void registerMissionsToAtlas() {
+		Missions missions = Missions.getInstance();
+		// TODO Register missions when created.
+	}
+
+	private void registerRewardsToAtlas() {
+		Rewards rewards = Rewards.getInstance();
+		rewards.addReward(CardReward.class);
+		rewards.addReward(CardSlotReward.class);
+		rewards.addReward(EstateClaimReward.class);
+		rewards.addReward(ExperienceReward.class);
+		rewards.addReward(WisdomReward.class);
 	}
 
 	public void reportInfo() {

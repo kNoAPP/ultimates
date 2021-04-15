@@ -7,7 +7,7 @@
 
 	<groupId>com.knoban</groupId>
 	<artifactId>ultimates</artifactId>
-	<version>0.1.4.0</version>
+	<version>0.1.5.0</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.knoban</groupId>
 			<artifactId>atlas</artifactId>
-			<version>0.1.4.0</version>
+			<version>0.1.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->

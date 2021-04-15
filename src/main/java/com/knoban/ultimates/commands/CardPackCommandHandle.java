@@ -70,7 +70,7 @@ public class CardPackCommandHandle {
             holder.incrementOwnedCardPacks(pack.ordinal(), -1);
         } else {
             sender.sendMessage("§cYou don't own any Cardpacks of this type: §4" + pack.getName());
-            sender.sendMessage("§7Buy more at: §b<link>");
+            sender.sendMessage("§7Buy more at: §b" + plugin.getConfigFile().getCachedYML().getString("Store-URL", "https://example.com/store"));
         }
     }
 

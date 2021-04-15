@@ -1,10 +1,8 @@
-package com.knoban.ultimates.rewards.impl;
+package com.knoban.ultimates.rewards;
 
-import com.knoban.ultimates.cardholder.Holder;
-import com.knoban.ultimates.primal.Tier;
-import com.knoban.ultimates.rewards.Reward;
-import com.knoban.ultimates.rewards.RewardInfo;
-import org.bukkit.Bukkit;
+import com.knoban.atlas.rewards.Reward;
+import com.knoban.atlas.rewards.RewardInfo;
+import com.knoban.ultimates.cardholder.CardHolder;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -22,12 +20,12 @@ public class WisdomReward extends Reward {
         this.icon = createIcon(amount);
     }
 
-    public WisdomReward(ItemStack icon, Tier tier, long amount) {
-        super(icon, tier, amount);
+    public WisdomReward(ItemStack icon, long amount) {
+        super(icon, amount);
     }
 
-    public WisdomReward(Tier tier, long amount) {
-        super(createIcon(amount), tier, amount);
+    public WisdomReward(long amount) {
+        super(createIcon(amount), amount);
     }
 
     private static ItemStack createIcon(long amount) {
@@ -40,13 +38,13 @@ public class WisdomReward extends Reward {
     }
 
     @Override
-    public void reward(Holder holder) {
-        Player p = Bukkit.getPlayer(holder.getUniqueId());
-        if(p != null) {
-            p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.6F);
-            p.sendMessage("§2You got §b" + amount + " wisdom§2!");
-        }
+    public void reward(Player p) {
+        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.6F);
+        p.sendMessage("§2You got §b" + amount + " wisdom§2!");
 
-        holder.incrementWisdom((int) amount);
+
+        CardHolder holder = CardHolder.getCardHolder(p);
+        if(holder != null && holder.isLoaded())
+            holder.incrementWisdom((int) amount);
     }
 }

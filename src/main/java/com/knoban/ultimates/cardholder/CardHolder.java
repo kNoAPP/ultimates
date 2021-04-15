@@ -1,7 +1,11 @@
 package com.knoban.ultimates.cardholder;
 
+import com.knoban.atlas.battlepass.BattlePassLevel;
 import com.knoban.atlas.gui.GUI;
 import com.knoban.atlas.gui.GUIClickable;
+import com.knoban.atlas.missions.Mission;
+import com.knoban.atlas.missions.MissionLayout;
+import com.knoban.atlas.rewards.Reward;
 import com.knoban.atlas.utils.SoundBundle;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.aspects.Items;
@@ -9,11 +13,13 @@ import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.cards.base.Silenceable;
 import com.knoban.ultimates.primal.PrimalSource;
+import com.knoban.ultimates.rewards.CardReward;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -633,18 +639,227 @@ public class CardHolder extends Holder {
         GUIClickable battlepass = new GUIClickable();
         battlepass.setActionOnClick((g, e) -> {
             showTo.playSound(showTo.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
-            plugin.getBattlepassManager().openBattlePassGUI(showTo, this, 0, false);
+            openBattlePassGUI(showTo, this, 0, false);
         });
         gui.setSlot(11, Items.PASS_PASS_MENU_ITEM, battlepass);
 
         GUIClickable missions = new GUIClickable();
         missions.setActionOnClick((g, e) -> {
             showTo.playSound(showTo.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
-            plugin.getMissionManager().openMissionGUI(showTo, this, false);
+            openMissionGUI(showTo, this, false);
         });
         gui.setSlot(15, Items.PASS_MISSIONS_MENU_ITEM, missions);
 
         gui.openInv(showTo);
+    }
+
+    public void openBattlePassGUI(Player showTo, CardHolder player, int page, boolean withOpenSounds) {
+        if(!player.isLoaded()) {
+            showTo.sendMessage(CardHolder.UNLOADED_MESSAGE);
+            return;
+        }
+
+        GUI gui = withOpenSounds ? new GUI(plugin, "Rewards", 45,
+                new SoundBundle(Sound.BLOCK_CHEST_OPEN, 1F, 0.9F),
+                null,
+                new SoundBundle(Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F),
+                new SoundBundle(Sound.ENTITY_LINGERING_POTION_THROW, 1F, 1.5F))
+                : new GUI(plugin, "Rewards", 45,
+                null,
+                null,
+                new SoundBundle(Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F),
+                new SoundBundle(Sound.ENTITY_LINGERING_POTION_THROW, 1F, 1.5F));
+
+        // Back Button
+        GUIClickable back = new GUIClickable();
+        back.setActionOnClick((g, e) -> {
+            player.openBattlePassMainGUI(showTo, false);
+            showTo.playSound(showTo.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
+        });
+        gui.setSlot(0, Items.BACK_ITEM, back);
+
+        // Explanation Item
+        gui.setSlot(4, Items.BATTLEPASS_EXPLANATION_ITEM);
+
+        int levelBase = page*9 + 1;
+        for(int i=0; i<9; i++) {
+            int level = levelBase + i;
+
+            ItemStack progress;
+            if(player.getLevel() >= level) {
+                progress = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
+                ItemMeta im = progress.getItemMeta();
+                im.setDisplayName("§dLevel " + level);
+                im.setLore(Arrays.asList("§7Complete!"));
+                progress.setItemMeta(im);
+            } else if(player.getLevel() + 1 == level) {
+                progress = new ItemStack(Material.PINK_STAINED_GLASS_PANE);
+                ItemMeta im = progress.getItemMeta();
+                im.setDisplayName("§dLevel " + level);
+                im.setLore(Arrays.asList("§a" + (player.getXp() % 1000) + "§f / §21000xp", "§7Complete missions for more §2xp§7!"));
+                progress.setItemMeta(im);
+            } else {
+                progress = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+                ItemMeta im = progress.getItemMeta();
+                im.setDisplayName("§fLevel " + level);
+                progress.setItemMeta(im);
+            }
+
+            gui.setSlot(18+i, progress);
+
+            BattlePassLevel bpLevel = plugin.getBattlepassManager().getBattlePassLevel(level);
+            if(bpLevel == null)
+                continue;
+
+            Reward free = bpLevel.getFree();
+            if(free != null) {
+                if(free instanceof CardReward)
+                    gui.setSlot(9+i, ((CardReward) free).getIcon(player));
+                else
+                    gui.setSlot(9+i, free.getIcon());
+            }
+
+            Reward premium = bpLevel.getPremium();
+            if(premium != null) {
+                /*if(premium instanceof SpecificReward)
+                    gui.setSlot(27+i, ((SpecificReward) premium).getIcon(player));
+                else*/
+                gui.setSlot(27+i, premium.getIcon());
+            }
+        }
+
+        // Show previous page
+        if(page > 0) {
+            GUIClickable previousPage = new GUIClickable();
+            previousPage.setActionOnClick((g, e) -> {
+                showTo.playSound(showTo.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
+                openBattlePassGUI(showTo, player, page - 1, false);
+            });
+            gui.setSlot(36, Items.PREVIOUS_PAGE, previousPage);
+        }
+
+        // Buy the battle pass!
+        if(!player.hasBattlePass()) {
+            GUIClickable purchasePass = new GUIClickable();
+            purchasePass.setActionOnClick((g, e) -> {
+                showTo.closeInventory();
+                showTo.playSound(showTo.getLocation(), Sound.ENTITY_WANDERING_TRADER_REAPPEARED, 1F, 1F);
+                showTo.sendMessage("§6§lBuy the Battle Pass! §fVisit our store at:");
+                showTo.sendMessage("§b" + plugin.getConfigFile().getCachedYML().getString("Store-URL", "https://example.com/store"));
+            });
+            gui.setSlot(40, Items.BATTLEPASS_PURCHASE_PASS, purchasePass);
+        }
+
+        // Show next page
+        if(levelBase + 9 <= plugin.getBattlepassManager().getHighestBattlePassLevel()) {
+            GUIClickable nextPage = new GUIClickable();
+            nextPage.setActionOnClick((g, e) -> {
+                showTo.playSound(showTo.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
+                openBattlePassGUI(showTo, player, page + 1, false);
+            });
+            gui.setSlot(44, Items.NEXT_PAGE, nextPage);
+        }
+
+        // Open the inventory.
+        gui.openInv(showTo);
+    }
+
+    public void openMissionGUI(Player player) {
+        openMissionGUI(player, CardHolder.getCardHolder(player), true);
+    }
+
+    public void openMissionGUI(Player showTo, CardHolder player, boolean withOpenSounds) {
+        if(!player.isLoaded()) {
+            showTo.sendMessage(CardHolder.UNLOADED_MESSAGE);
+            return;
+        }
+
+        Collection<Mission> activeMissions = plugin.getMissionManager().getActiveMissions().values();
+        int activeMissionCount = activeMissions.size();
+        final boolean expandGUI = activeMissionCount > 9;
+
+        GUI gui = withOpenSounds ? new GUI(plugin, "Missions", expandGUI ? 54 : 27,
+                new SoundBundle(Sound.BLOCK_CHEST_OPEN, 1F, 0.9F),
+                null,
+                new SoundBundle(Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F),
+                new SoundBundle(Sound.ENTITY_LINGERING_POTION_THROW, 1F, 1.5F))
+                : new GUI(plugin, "Missions", expandGUI ? 54 : 27,
+                null,
+                null,
+                new SoundBundle(Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F),
+                new SoundBundle(Sound.ENTITY_LINGERING_POTION_THROW, 1F, 1.5F));
+
+        // Back Button
+        GUIClickable back = new GUIClickable();
+        back.setActionOnClick((g, e) -> {
+            player.openBattlePassMainGUI(showTo, false);
+            showTo.playSound(showTo.getLocation(), Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1F, 1F);
+        });
+        gui.setSlot(0, Items.BACK_ITEM, back);
+
+        // Explanation Item
+        gui.setSlot(4, Items.MISSIONS_EXPLANATION_ITEM);
+
+        BukkitTask task = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            PriorityQueue<Mission> queue = new PriorityQueue<>(activeMissions);
+            boolean currentExpandGUI = queue.size() > 9;
+            if(currentExpandGUI == expandGUI)
+                updateMissionGUI(player, gui, queue);
+            else { // On inventory resize...
+                showTo.closeInventory();
+                openMissionGUI(showTo, player, false);
+            }
+        }, 0L, 20L);
+        gui.setOnDestroyCallback(task::cancel);
+
+        gui.openInv(showTo);
+    }
+
+    private void updateMissionGUI(CardHolder player, GUI gui, Queue<Mission> missions) {
+        if(!player.isLoaded())
+            return;
+
+        UUID uuid = player.getUniqueId();
+        ItemStack air = new ItemStack(Material.AIR);
+        for(int i=9; i<27; i++)
+            gui.setSlot(i, air);
+
+        MissionLayout layout = MissionLayout.of(missions.size());
+        for(int i : layout.getLayout()) {
+            Mission mission = missions.poll();
+            assert mission != null;
+            gui.setSlot(9+i, mission.getMissionItem(uuid));
+            Reward reward = mission.getReward();
+
+            if(reward == null)
+                continue;
+
+            /*if(reward instanceof SpecificReward)
+                gui.setSlot(18+i, ((SpecificReward) reward).getIcon(player));
+            else*/
+            gui.setSlot(18+i, mission.getReward().getIcon());
+        }
+
+        if(missions.isEmpty())
+            return;
+
+        for(int i=36; i<54; i++)
+            gui.setSlot(i, air);
+
+        layout = MissionLayout.of(missions.size());
+        for(int i : layout.getLayout()) {
+            Mission mission = missions.poll();
+            gui.setSlot(36+i, mission.getMissionItem(uuid));
+            Reward reward = mission.getReward();
+
+            if(reward == null)
+                continue;
+
+            if(reward instanceof CardReward) // Special case until I can find a better way to do this.
+                gui.setSlot(45+i, ((CardReward) reward).getIcon(player));
+            else
+                gui.setSlot(45+i, mission.getReward().getIcon());
+        }
     }
 
     /**
@@ -705,8 +920,11 @@ public class CardHolder extends Holder {
                         player.sendMessage("§4You had this card drawn. It has been temporarily discarded.");
                     }
                 }
-                if(primalsUseScoreboard)
-                    primalSource.getTeam().addEntry(player.getName());
+                if(primalsUseScoreboard) {
+                    PrimalSource source = PrimalSource.getSourceFromCards(drawnCards);
+                    setPrimalSource(source);
+                }
+
 
                 plugin.getMissionManager().registerDataListener(uuid);
                 checkForRewardFromBattlePass();
@@ -751,6 +969,7 @@ public class CardHolder extends Holder {
      * @param p - The player to get the CardHolder instance from
      * @return the CardHolder instance
      */
+    @Nullable
     public static CardHolder getCardHolder(@NotNull Player p) {
         return players.get(p);
     }

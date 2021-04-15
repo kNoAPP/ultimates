@@ -3,7 +3,9 @@ package com.knoban.ultimates.cardholder;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.SetOptions;
+import com.google.cloud.firestore.WriteResult;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.knoban.atlas.callbacks.GenericCallback1;
 import com.knoban.atlas.claims.Landlord;
@@ -340,12 +342,12 @@ public abstract class Holder extends AtlasFirebaseMutex {
             }
 
             for(; maxFreeRewardedLevel<currentLevel; ++maxFreeRewardedLevel)
-                plugin.getBattlepassManager().rewardFreeLevel(this, maxFreeRewardedLevel + 1);
+                plugin.getBattlepassManager().rewardFreeLevel(p, maxFreeRewardedLevel + 1);
         }
 
         if(battlePass && currentLevel > maxPremiumRewardedLevel) {
             for(; maxPremiumRewardedLevel<currentLevel; ++maxPremiumRewardedLevel)
-                plugin.getBattlepassManager().rewardPremiumLevel(this, maxPremiumRewardedLevel + 1);
+                plugin.getBattlepassManager().rewardPremiumLevel(p, maxPremiumRewardedLevel + 1);
         }
     }
 
