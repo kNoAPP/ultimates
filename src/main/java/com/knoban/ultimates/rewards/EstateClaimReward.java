@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class EstateClaimReward extends Reward {
     }
 
     @Override
-    public void reward(Player p) {
+    public void reward(@NotNull Player p) {
         p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST_FAR, 3F, 0.8F);
         p.playSound(p.getLocation(), Sound.ITEM_TRIDENT_RETURN, 3F, 0.5F);
         p.sendMessage("§2You got an extra §3" + amount + " Estate Claim" + (amount == 1 ? "" : "s") + "§2!");

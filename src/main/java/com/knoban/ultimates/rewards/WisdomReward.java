@@ -8,6 +8,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class WisdomReward extends Reward {
     }
 
     @Override
-    public void reward(Player p) {
+    public void reward(@NotNull Player p) {
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.6F);
         p.sendMessage("§2You got §b" + amount + " wisdom§2!");
 

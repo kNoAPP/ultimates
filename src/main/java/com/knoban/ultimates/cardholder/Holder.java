@@ -43,6 +43,8 @@ public abstract class Holder extends AtlasFirebaseMutex {
     protected int timePlayed, maxEstateClaims, maxCardSlots, xp, maxFreeRewardedLevel, maxPremiumRewardedLevel, wisdom;
     protected long lastSeen;
 
+    private boolean dataSyncIssue;
+
     private static boolean cardsDrawOnLoadSaveOnUnload = true;
 
     protected Holder(@NotNull Ultimates plugin, @NotNull UUID uuid, @NotNull String name) {
@@ -55,6 +57,7 @@ public abstract class Holder extends AtlasFirebaseMutex {
         this.name = name;
         this.landlord = plugin.getLandManager().getLandlord(uuid);
         this.loaded = false;
+        this.dataSyncIssue = false;
     }
 
     /**
@@ -488,6 +491,17 @@ public abstract class Holder extends AtlasFirebaseMutex {
                 }
 
                 loadWithoutMutex(callback);
+                listenForKarens((noError) -> {
+                    dataSyncIssue = true;
+                    plugin.getServer().getScheduler().runTask(plugin, () -> {
+                        Player p = Bukkit.getPlayer(uuid);
+                        if(p != null) {
+                            p.kickPlayer("§cData synchronization error on CardHolder data, did you login elsewhere?" +
+                                    "\n§cIf this problem continues, contact your server administrator." +
+                                    "\n§cGive them this error code: §4ults-12");
+                        }
+                    });
+                });
             });
         });
     }
@@ -583,6 +597,9 @@ public abstract class Holder extends AtlasFirebaseMutex {
      * (or null if none)
      */
     protected void save(boolean block, @Nullable GenericCallback1<Boolean> callback) {
+        if(dataSyncIssue) // Don't save the data if it will corrupt a save file.
+            return;
+
         Map<String, Object> update = new TreeMap<>();
         update.put("username", name);
         update.put("lastSeen", System.currentTimeMillis());

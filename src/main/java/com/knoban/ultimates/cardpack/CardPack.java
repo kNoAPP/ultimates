@@ -76,7 +76,7 @@ public enum CardPack {
                             if(!toReward.getOwnedCards().contains(randomCard)) {
                                 return new CardReward(randomCard, null) {
                                     @Override
-                                    public void reward(Player p) {
+                                    public void reward(@NotNull Player p) {
                                         if(toReward.getOwnedCards().contains(randomCard)) {
                                             showTo.playSound(showTo.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7F, 0.6F);
                                             showTo.sendMessage("§5You rolled a duplicate card! §bHere's " + wisdomAmt + " wisdom instead.");
@@ -100,7 +100,7 @@ public enum CardPack {
                     if(!toReward.getOwnedCards().contains(randomCard)) {
                         return new CardReward(randomCard, null) {
                             @Override
-                            public void reward(Player p) {
+                            public void reward(@NotNull Player p) {
                                 if(toReward.getOwnedCards().contains(randomCard)) {
                                     showTo.playSound(showTo.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7F, 0.6F);
                                     showTo.sendMessage("§5You rolled a duplicate card! §bHere's " + wisdomEpicAmt + " wisdom instead.");
