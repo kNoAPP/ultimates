@@ -33,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -180,6 +181,14 @@ public class Ultimates extends JavaPlugin {
 			new UltimatesCommandHandle(this);
 		if(fc.getBoolean("Command-Toggle.Wisdom", true))
 			new WisdomCommandHandle(this);
+
+		// Disable cards
+		for(String cardName : fc.getStringList("Cards.DisableThese")) {
+			Card c = Cards.getInstance().getCardInstance(cardName);
+			if(c != null) {
+				c.setEnabled(false);
+			}
+		}
 
 		for(Player pl : Bukkit.getOnlinePlayers()) {
 			CardHolder.getCardHolder(pl).login();

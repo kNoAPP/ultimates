@@ -38,6 +38,8 @@ Command-Toggle:
   Wisdom: true
 Cards:
   Draw-On-Load-Save-On-Unload: true
+  DisableThese:
+    - 'example-card-name'
 Primals:
   Use-Scoreboard: true
 Tutorial:

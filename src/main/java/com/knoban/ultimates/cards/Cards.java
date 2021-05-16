@@ -5,6 +5,7 @@ import com.knoban.ultimates.cards.impl.*;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public final class Cards {
@@ -108,6 +109,7 @@ public final class Cards {
         return cardInstancesByPrimal;
     }
 
+    @Nullable
     public Card getCardInstance(String name) {
         return cardInstancesNameMap.get(name);
     }

@@ -72,7 +72,7 @@ public enum Tier {
         return chance = occurrence / SUM;
     }
 
-    private static final double SUM = getSum(); // GET SUM, NOOB! hahaha
+    private static final double SUM = getSum();
     private static double getSum() {
         double sum = 0;
         for(Tier tier : Tier.values())
