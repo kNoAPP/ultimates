@@ -6,6 +6,12 @@ import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.player.LocalPDStore;
 import com.knoban.ultimates.primal.PrimalSource;
+import io.papermc.paper.chat.ChatComposer;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -147,7 +153,7 @@ public class GeneralListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onChat(AsyncPlayerChatEvent e) {
+	public void onChat(AsyncChatEvent e) {
 		Player p = e.getPlayer();
 		CardHolder holder = CardHolder.getCardHolder(p);
 		if(!holder.isLoaded()) {
@@ -157,8 +163,15 @@ public class GeneralListener implements Listener {
 
 		PrimalSource source = holder.getPrimalSource();
 		if(source == PrimalSource.NONE)
-			e.setFormat("§7%s: %s");
+			e.composer((player, display, message) ->
+					display.color(NamedTextColor.GRAY)
+							.append(Component.text(": ").color(NamedTextColor.GRAY))
+							.append(message.color(NamedTextColor.GRAY)));
 		else
-			e.setFormat(source.getDisplay() + " §7%s: %s");
+			e.composer((player, display, message) ->
+					Component.text(source.getDisplay() + " ").color(source.getTextColor())
+					.append(display.color(NamedTextColor.GRAY))
+					.append(Component.text(": ").color(NamedTextColor.GRAY))
+					.append(message.color(NamedTextColor.GRAY)));
 	}
 }

@@ -1,5 +1,6 @@
 package com.knoban.ultimates.primal;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -59,7 +60,7 @@ public enum Tier {
 
         this.placeholder = new ItemStack(Material.getMaterial(color + "_STAINED_GLASS_PANE"));
         ItemMeta im = placeholder.getItemMeta();
-        im.setDisplayName(display);
+        im.displayName(Component.text(display));
         placeholder.setItemMeta(im);
 
         return placeholder;
