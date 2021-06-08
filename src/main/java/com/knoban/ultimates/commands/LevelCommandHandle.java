@@ -19,7 +19,7 @@ public class LevelCommandHandle {
         this.plugin = plugin;
 
         ACAPI api = ACAPI.getApi();
-        ACAPI.getApi().registerCommandsFromClass(plugin, LevelCommandHandle.class, this);
+        api.registerCommandsFromClass(plugin, LevelCommandHandle.class, this);
     }
 
     @AtlasCommand(paths = {"level", "level help", "level help 1"})

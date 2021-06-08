@@ -22,7 +22,7 @@ public class BattlePassCommandHandle {
         this.plugin = plugin;
 
         ACAPI api = ACAPI.getApi();
-        ACAPI.getApi().registerCommandsFromClass(plugin, BattlePassCommandHandle.class, this);
+        api.registerCommandsFromClass(plugin, BattlePassCommandHandle.class, this);
     }
 
     @AtlasCommand(paths = {"battlepass", "bp", "pass",

@@ -3,6 +3,7 @@ package com.knoban.ultimates.rewards;
 import com.knoban.atlas.rewards.Reward;
 import com.knoban.atlas.rewards.RewardInfo;
 import com.knoban.ultimates.cardholder.CardHolder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -32,8 +33,8 @@ public class ExperienceReward extends Reward {
     private static ItemStack createIcon(long amount) {
         ItemStack icon = new ItemStack(Material.EXPERIENCE_BOTTLE);
         ItemMeta im = icon.getItemMeta();
-        im.setDisplayName("§5" + amount + " xp");
-        im.setLore(Arrays.asList("§7Levels up the §6Battle Pass§7!"));
+        im.displayName(Component.text("§5" + amount + " xp"));
+        im.lore(Arrays.asList(Component.text("§7Levels up the §6Battle Pass§7!")));
         icon.setItemMeta(im);
         return icon;
     }

@@ -3,6 +3,7 @@ package com.knoban.ultimates.rewards;
 import com.knoban.atlas.rewards.Reward;
 import com.knoban.atlas.rewards.RewardInfo;
 import com.knoban.ultimates.cardholder.CardHolder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -32,8 +33,8 @@ public class CardSlotReward extends Reward {
     private static ItemStack createIcon(long amount) {
         ItemStack icon = new ItemStack(Material.MUSIC_DISC_CHIRP);
         ItemMeta wisdomIM = icon.getItemMeta();
-        wisdomIM.setDisplayName("§c" + amount + " Extra Card Slot" + (amount == 1 ? "" : "s"));
-        wisdomIM.setLore(Arrays.asList("§7Increases the number of cards", "§7you can have drawn at once."));
+        wisdomIM.displayName(Component.text("§c" + amount + " Extra Card Slot" + (amount == 1 ? "" : "s")));
+        wisdomIM.lore(Arrays.asList(Component.text("§7Increases the number of cards"), Component.text("§7you can have drawn at once.")));
         icon.setItemMeta(wisdomIM);
         return icon;
     }

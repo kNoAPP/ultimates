@@ -3,6 +3,7 @@ package com.knoban.ultimates.rewards;
 import com.knoban.atlas.rewards.Reward;
 import com.knoban.atlas.rewards.RewardInfo;
 import com.knoban.ultimates.cardholder.CardHolder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -32,8 +33,8 @@ public class WisdomReward extends Reward {
     private static ItemStack createIcon(long amount) {
         ItemStack icon = new ItemStack(Material.ENCHANTING_TABLE);
         ItemMeta wisdomIM = icon.getItemMeta();
-        wisdomIM.setDisplayName("§5" + amount + " Wisdom");
-        wisdomIM.setLore(Arrays.asList("§7Used to §9buy cards§7."));
+        wisdomIM.displayName(Component.text("§5" + amount + " Wisdom"));
+        wisdomIM.lore(Arrays.asList(Component.text("§7Used to §9buy cards§7.")));
         icon.setItemMeta(wisdomIM);
         return icon;
     }
@@ -42,8 +43,7 @@ public class WisdomReward extends Reward {
     public void reward(@NotNull Player p) {
         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 0.6F);
         p.sendMessage("§2You got §b" + amount + " wisdom§2!");
-
-
+        
         CardHolder holder = CardHolder.getCardHolder(p);
         if(holder != null && holder.isLoaded())
             holder.incrementWisdom((int) amount);

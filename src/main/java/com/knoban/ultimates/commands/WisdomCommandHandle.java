@@ -19,7 +19,7 @@ public class WisdomCommandHandle {
         this.plugin = plugin;
 
         ACAPI api = ACAPI.getApi();
-        ACAPI.getApi().registerCommandsFromClass(plugin, WisdomCommandHandle.class, this);
+        api.registerCommandsFromClass(plugin, WisdomCommandHandle.class, this);
     }
 
     @AtlasCommand(paths = {"wisdom", "wisdom help", "wisdom help 1"}, permission = PermissionConstants.ULTS_WISDOM)

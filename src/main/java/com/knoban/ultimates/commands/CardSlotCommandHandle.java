@@ -19,7 +19,7 @@ public class CardSlotCommandHandle {
         this.plugin = plugin;
 
         ACAPI api = ACAPI.getApi();
-        ACAPI.getApi().registerCommandsFromClass(plugin, CardSlotCommandHandle.class, this);
+        api.registerCommandsFromClass(plugin, CardSlotCommandHandle.class, this);
     }
 
     @AtlasCommand(paths = {"cardslot", "cardslot help", "cardslot help 1"})

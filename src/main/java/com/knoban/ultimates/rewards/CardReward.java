@@ -25,7 +25,7 @@ public class CardReward extends Reward {
         super(data);
 
         String cardName = (String) data.getOrDefault("card", "");
-        this.card = Cards.getInstance().getCardInstance(cardName);
+        this.card = Cards.getInstance().getCardInstanceByName(cardName);
         if(card == null)
             throw new IllegalArgumentException("Invalid card: " + cardName);
         this.icon = card.getUnownedIcon();

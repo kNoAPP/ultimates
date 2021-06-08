@@ -10,7 +10,7 @@ import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.commands.parsables.CardParsable;
 import com.knoban.ultimates.permissions.PermissionConstants;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -128,7 +128,7 @@ public class CardCommandHandle {
     @AtlasCommand(paths = {"card toggle"}, permission = PermissionConstants.ULTS_CARD_TOGGLE)
     public void cmdCardToggle(CommandSender sender, Card card) {
         if(card.isEnabled()) {
-            Bukkit.broadcastMessage("§4An admin has disabled the card: " + card.getInfo().display());
+            plugin.getServer().sendMessage(Component.text("§4An admin has disabled the card: " + card.getInfo().display()));
             for(Player pl : card.getDrawnPlayers()) {
                 pl.sendMessage("§4You had this card drawn. It has been temporarily discarded.");
             }
@@ -139,7 +139,7 @@ public class CardCommandHandle {
                     holder.discardCards(card);
             }
         } else {
-            Bukkit.broadcastMessage("§aAn admin has enabled the card: " + card.getInfo().display());
+            plugin.getServer().sendMessage(Component.text("§aAn admin has enabled the card: " + card.getInfo().display()));
             card.setEnabled(true);
         }
     }

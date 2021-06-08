@@ -544,7 +544,7 @@ public abstract class Holder extends AtlasFirebaseMutex {
 
                     if(cardsDrawOnLoadSaveOnUnload) {
                         for(String cardName : (Iterable<String>) values.getOrDefault("drawnCards", Collections.emptyList())) {
-                            Card card = Cards.getInstance().getCardInstance(cardName);
+                            Card card = Cards.getInstance().getCardInstanceByName(cardName);
                             if(card != null) { //silent skip: it will get logged when "ownedCards" are parsed
                                 toDraw.add(card);
                             }
@@ -552,7 +552,7 @@ public abstract class Holder extends AtlasFirebaseMutex {
                     }
 
                     for(String cardName : (Iterable<String>) values.getOrDefault("ownedCards", Collections.emptyList())) {
-                        Card card = Cards.getInstance().getCardInstance(cardName);
+                        Card card = Cards.getInstance().getCardInstanceByName(cardName);
                         if(card != null) {
                             ownedCards.add(card);
                         } else {

@@ -46,7 +46,7 @@ public enum PrimalSource {
         if(!display.equals("§9No Primal")) {
             team.setAllowFriendlyFire(false);
             team.setCanSeeFriendlyInvisibles(true);
-            team.prefix(Component.text(display + " ", textColor));
+            team.prefix(Component.text(display + " "));
         }
         team.color(NamedTextColor.GRAY);
 

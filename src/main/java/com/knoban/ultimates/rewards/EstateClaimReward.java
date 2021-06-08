@@ -3,6 +3,7 @@ package com.knoban.ultimates.rewards;
 import com.knoban.atlas.rewards.Reward;
 import com.knoban.atlas.rewards.RewardInfo;
 import com.knoban.ultimates.cardholder.CardHolder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -32,8 +33,8 @@ public class EstateClaimReward extends Reward {
     private static ItemStack createIcon(long amount) {
         ItemStack icon = new ItemStack(Material.CAMPFIRE);
         ItemMeta wisdomIM = icon.getItemMeta();
-        wisdomIM.setDisplayName("§3" + amount + " Extra Estate" + (amount == 1 ? "" : "s"));
-        wisdomIM.setLore(Arrays.asList("§7Used to §9claim §7chunks of land."));
+        wisdomIM.displayName(Component.text("§3" + amount + " Extra Estate" + (amount == 1 ? "" : "s")));
+        wisdomIM.lore(Arrays.asList(Component.text("§7Used to §9claim §7chunks of land.")));
         icon.setItemMeta(wisdomIM);
         return icon;
     }

@@ -2,7 +2,6 @@ package com.knoban.ultimates.cards;
 
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.aspects.Items;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -17,7 +16,7 @@ import java.util.EnumSet;
 
 public class GeneralCardListener implements Listener {
 
-    private Ultimates plugin;
+    private final Ultimates plugin;
 
     public GeneralCardListener(Ultimates plugin) {
         this.plugin = plugin;

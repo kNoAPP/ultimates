@@ -17,7 +17,7 @@ public class FlashCommandHandle {
 	private final Ultimates plugin;
 
 	private static final long FLASH_COOLDOWN = 10000;
-	private Cache<UUID, Cooldown> cache = CacheBuilder.newBuilder()
+	private final Cache<UUID, Cooldown> cache = CacheBuilder.newBuilder()
 			.expireAfterWrite(FLASH_COOLDOWN, TimeUnit.MILLISECONDS)
 			.build();
 

@@ -18,6 +18,7 @@ import com.knoban.ultimates.cardholder.OfflineCardHolder;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.cards.GeneralCardListener;
+import com.knoban.ultimates.cards.impl.*;
 import com.knoban.ultimates.claims.UltimatesEstateListener;
 import com.knoban.ultimates.commands.*;
 import com.knoban.ultimates.commands.parsables.PrimalSourceParsable;
@@ -33,7 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -150,6 +151,7 @@ public class Ultimates extends JavaPlugin {
 		bossBarAnimationHandler = new BossBarAnimationHandler(this);
 		registerMissionsToAtlas();
 		registerRewardsToAtlas();
+		registerCardsToUltimates();
 		battlepassManager = new BattlePassManager(this, firebase, "/battlepass");
 		missionManager = new MissionManager(this, firebase, "/missions");
 		aloha = new AlohaListener(this);
@@ -184,7 +186,7 @@ public class Ultimates extends JavaPlugin {
 
 		// Disable cards
 		for(String cardName : fc.getStringList("Cards.DisableThese")) {
-			Card c = Cards.getInstance().getCardInstance(cardName);
+			Card c = Cards.getInstance().getCardInstanceByName(cardName);
 			if(c != null) {
 				c.setEnabled(false);
 			}
@@ -196,6 +198,20 @@ public class Ultimates extends JavaPlugin {
 		}
 	}
 
+	private void registerCardsToUltimates() {
+		Cards cards = Cards.getInstance();
+		Arrays.asList(OOCRegenerationCard.class, CultivatorCard.class, WormCard.class, RubberSkinCard.class,
+				ForceLevitationCard.class, StrangeBowCard.class, VeganCard.class, RubberProjectileCard.class,
+				ZeroGravityProjectileCard.class, DeflectionCard.class, MagmaWalkerCard.class,
+				SplashPotionOfGetHisAssCard.class, ScavengerCard.class, LumberjackCard.class, LuckCard.class,
+				SoulCard.class, FallCard.class, TwinsCard.class, EnlightenedCard.class, PokeCard.class, TeemoCard.class,
+				FlashbangCard.class, DruidCard.class, XRayCard.class, PortalCard.class, JuggernautCard.class,
+				TankCard.class, HotHandsCard.class, DryadsGiftCard.class, RunnersDietCard.class, TerrorCard.class,
+				PantherCard.class, SpeedCard.class, SteadyHandsCard.class, AnchorCard.class, UnyieldingMightCard.class,
+				FalconCard.class, ParleyCard.class, SchoolingCard.class, ShadowsUpriseCard.class, RealityPhaseCard.class
+		).forEach(cards::addCard);
+	}
+
 	private void registerMissionsToAtlas() {
 		Missions missions = Missions.getInstance();
 		// TODO Register missions when created.
@@ -203,11 +219,9 @@ public class Ultimates extends JavaPlugin {
 
 	private void registerRewardsToAtlas() {
 		Rewards rewards = Rewards.getInstance();
-		rewards.addReward(CardReward.class);
-		rewards.addReward(CardSlotReward.class);
-		rewards.addReward(EstateClaimReward.class);
-		rewards.addReward(ExperienceReward.class);
-		rewards.addReward(WisdomReward.class);
+		Arrays.asList(CardReward.class, CardSlotReward.class, EstateClaimReward.class, ExperienceReward.class,
+				WisdomReward.class
+		).forEach(rewards::addReward);
 	}
 
 	public void reportInfo() {
