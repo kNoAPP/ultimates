@@ -42,7 +42,7 @@ jobs:
           cd Atlas
           mvn --batch-mode --update-snapshots install
     - name: Build Ultimates
-        run: |
+      run: |
           cd Ultimates
           mvn --batch-mode --update-snapshots verify
     - name: Restart server
