@@ -16,13 +16,13 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: kNoAPP/Atlas
-        token: ${{ secrets.GITHUB_PAT }}
+        token: ${{ secrets.PAT_GITHUB }}
         path: Atlas
     - name: Clone Ultimates
       uses: actions/checkout@v2
       with:
         repository: kNoAPP/Ultimates
-        token: ${{ secrets.GITHUB_PAT }}
+        token: ${{ secrets.PAT_GITHUB }}
         path: Ultimates
     - name: Setup JDK 16
       uses: actions/setup-java@v2
