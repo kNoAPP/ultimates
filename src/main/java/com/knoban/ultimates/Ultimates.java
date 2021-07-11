@@ -206,7 +206,7 @@ public class Ultimates extends JavaPlugin {
 				SplashPotionOfGetHisAssCard.class, ScavengerCard.class, LumberjackCard.class, LuckCard.class,
 				SoulCard.class, FallCard.class, TwinsCard.class, EnlightenedCard.class, PokeCard.class, TeemoCard.class,
 				FlashbangCard.class, DruidCard.class, XRayCard.class, PortalCard.class, JuggernautCard.class,
-				TankCard.class, HotHandsCard.class, DryadsGiftCard.class, RunnersDietCard.class, TerrorCard.class,
+				TankCard.class, HotHandsCard.class, DryadsGiftCard.class, RunnersDietCard.class,
 				PantherCard.class, SpeedCard.class, SteadyHandsCard.class, AnchorCard.class, UnyieldingMightCard.class,
 				FalconCard.class, ParleyCard.class, SchoolingCard.class, ShadowsUpriseCard.class, RealityPhaseCard.class
 		).forEach(cards::addCard);

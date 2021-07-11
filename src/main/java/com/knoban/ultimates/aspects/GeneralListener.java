@@ -159,12 +159,12 @@ public class GeneralListener implements Listener {
 
 		PrimalSource source = holder.getPrimalSource();
 		if(source == PrimalSource.NONE)
-			e.composer((player, display, message) ->
+			e.renderer((player, display, message, audience) ->
 					display.color(NamedTextColor.GRAY)
 							.append(Component.text(": ").color(NamedTextColor.GRAY))
 							.append(message.color(NamedTextColor.GRAY)));
 		else
-			e.composer((player, display, message) ->
+			e.renderer((player, display, message, audience) ->
 					Component.text(source.getDisplay() + " ").color(source.getTextColor())
 					.append(display.color(NamedTextColor.GRAY))
 					.append(Component.text(": ").color(NamedTextColor.GRAY))

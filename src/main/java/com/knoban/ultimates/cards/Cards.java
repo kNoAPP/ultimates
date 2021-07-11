@@ -67,7 +67,7 @@ public final class Cards {
     private void reSortCards() {
         cardInstancesByTierAscending.clear();
         cardInstancesByTierDescending.clear();
-        cardInstancesByPrimal.clear();
+        cardInstancesByPrimalAscending.clear();
 
         for(Tier t : Tier.values()) {
             cardInstancesByTierAscending.addAll(cardInstancesByTier.getOrDefault(t, new ArrayList<>()));
