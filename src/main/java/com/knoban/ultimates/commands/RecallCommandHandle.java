@@ -7,6 +7,7 @@ import com.knoban.atlas.world.Coordinate;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.aspects.Message;
 import com.knoban.ultimates.player.LocalPDStore;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -86,7 +87,7 @@ public class RecallCommandHandle implements Listener {
 				if(recalls.contains(p.getUniqueId())) {
 					double tl = 8 - ((double)t/20);
 					
-					p.sendActionBar(Tools.generateWaitBar((double) t / (20.0 * 8.0), 20, ChatColor.GOLD, '☕', ChatColor.GRAY, '☕') + " " + ChatColor.GREEN + Tools.round(tl, 1) + "s");
+					p.sendActionBar(Tools.generateWaitBar((double) t / (20.0 * 8.0), 20, ChatColor.GOLD, '☕', ChatColor.GRAY, '☕').append(Component.text(" " + ChatColor.GREEN + Tools.round(tl, 1) + "s")));
 					p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getLocation().clone().add(0, 0.5, 0), 1, 0.3F, 0.1F, 0.3F, 0.01);
 					if(t%20 == 0) {
 						p.playSound(p.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_ON, 1F, 1F);

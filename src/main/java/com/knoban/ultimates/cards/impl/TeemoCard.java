@@ -1,5 +1,6 @@
 package com.knoban.ultimates.cards.impl;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.knoban.atlas.scheduler.ClockedTask;
 import com.knoban.atlas.scheduler.ClockedTaskManager;
@@ -119,6 +120,14 @@ public class TeemoCard extends Card {
                 3, 0.3F, 0.3F, 0.3F, 0.01);
 
         ItemStack[] armor = savedArmor.remove(p.getUniqueId());
+        ItemStack[] newArmor = p.getInventory().getArmorContents();
+        for(int i=0; i<newArmor.length; ++i) {
+            if(newArmor[i] != null) {
+                if(armor[i] != null)
+                p.getInventory().addItem(armor[i]);
+                armor[i] = newArmor[i];
+            }
+        }
         p.getInventory().setArmorContents(armor);
     }
 

@@ -12,18 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clone Atlas
-      uses: actions/checkout@v2
-      with:
-        repository: kNoAPP/Atlas
-        token: ${{ secrets.PAT_GITHUB }}
-        path: Atlas
-    - name: Clone Ultimates
-      uses: actions/checkout@v2
-      with:
-        repository: kNoAPP/Ultimates
-        token: ${{ secrets.PAT_GITHUB }}
-        path: Ultimates
     - name: Setup JDK 16
       uses: actions/setup-java@v2
       with:
@@ -37,7 +25,21 @@ jobs:
             ~/.m2/repository
         key: ${{ runner.os }}-Ultimates-${{ hashFiles('**/Ultimates/pom.xml') }}
         restore-keys: ${{ runner.os }}-Ultimates-
+    - name: Clone Atlas
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: kNoAPP/Atlas
+        token: ${{ secrets.PAT_GITHUB }}
+        path: Atlas
+    - name: Clone Ultimates
+      uses: actions/checkout@v2
+      with:
+        repository: kNoAPP/Ultimates
+        token: ${{ secrets.PAT_GITHUB }}
+        path: Ultimates
     - name: Build Atlas
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
           cd Atlas
           mvn --batch-mode --update-snapshots install
