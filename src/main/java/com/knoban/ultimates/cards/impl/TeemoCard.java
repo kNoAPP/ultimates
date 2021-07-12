@@ -120,6 +120,13 @@ public class TeemoCard extends Card {
                 3, 0.3F, 0.3F, 0.3F, 0.01);
 
         ItemStack[] armor = savedArmor.remove(p.getUniqueId());
+        ItemStack[] newArmor = p.getInventory().getArmorContents();
+        for(int i=0; i<newArmor.length; ++i) {
+            if(newArmor[i] != null) {
+                p.getInventory().addItem(armor[i]);
+                armor[i] = newArmor[i];
+            }
+        }
         p.getInventory().setArmorContents(armor);
     }
 
@@ -133,22 +140,5 @@ public class TeemoCard extends Card {
         ItemStack[] armor = p.getInventory().getArmorContents();
         savedArmor.put(p.getUniqueId(), armor);
         p.getInventory().setArmorContents(EMPTY_ARMOR);
-    }
-
-    // If a player equips armor while invisible, give them the hidden old armor.
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onArmorChange(PlayerArmorChangeEvent e) {
-        Player p = e.getPlayer();
-        if(drawn.contains(p) && savedArmor.get(p.getUniqueId()) != null) {
-            ItemStack[] newArmor = p.getInventory().getArmorContents();
-            ItemStack[] armor = savedArmor.get(p.getUniqueId());
-            for(int i=0; i<newArmor.length; ++i) {
-                if(newArmor[i] != null) {
-                    p.getInventory().addItem(armor[i]);
-                    armor[i] = newArmor[i];
-                }
-            }
-            p.getInventory().setArmorContents(EMPTY_ARMOR);
-        }
     }
 }
