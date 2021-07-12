@@ -24,10 +24,12 @@ import java.util.concurrent.ThreadLocalRandom;
 )
 public class DruidCard extends Card {
 
-    private static final EntityType[] entityTypeArray = new EntityType[]{EntityType.BAT,EntityType.BEE,EntityType.BLAZE,
+    private static final EntityType[] entityTypeArray = new EntityType[]{EntityType.AXOLOTL,EntityType.BAT,EntityType.BEE,
+            EntityType.BLAZE,
             EntityType.CAT,EntityType.CAVE_SPIDER,EntityType.CHICKEN,EntityType.COD,EntityType.COW,EntityType.CREEPER,
             EntityType.DOLPHIN,EntityType.DONKEY,EntityType.ELDER_GUARDIAN,EntityType.ENDERMAN,EntityType.ENDERMITE,
-            EntityType.EVOKER,EntityType.FOX,EntityType.GHAST,EntityType.GIANT,EntityType.GUARDIAN,EntityType.HOGLIN,
+            EntityType.EVOKER,EntityType.FOX,EntityType.GHAST,EntityType.GIANT,EntityType.GOAT,EntityType.GUARDIAN,
+            EntityType.HOGLIN,
             EntityType.HORSE, EntityType.HUSK,EntityType.ILLUSIONER,EntityType.IRON_GOLEM,EntityType.LIGHTNING,
             EntityType.LLAMA, EntityType.MULE,EntityType.MUSHROOM_COW,EntityType.MAGMA_CUBE,EntityType.OCELOT,
             EntityType.PANDA, EntityType.PARROT,EntityType.PHANTOM,EntityType.PIG,EntityType.PIGLIN,EntityType.PILLAGER,

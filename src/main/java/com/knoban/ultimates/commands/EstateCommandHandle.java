@@ -90,7 +90,7 @@ public class EstateCommandHandle {
     @AtlasCommand(paths = {"estate unclaim", "plot unclaim"})
     public void cmdEstateUnclaim(Player sender) {
         LandManager landManager = plugin.getLandManager();
-        Landlord landlord = landManager.getLandlord(sender.getUniqueId());
+        // Landlord landlord = landManager.getLandlord(sender.getUniqueId());
         Chunk chunk = sender.getChunk();
         Estate estate = landManager.getEstate(chunk);
 

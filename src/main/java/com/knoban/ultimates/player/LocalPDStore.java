@@ -40,11 +40,11 @@ public class LocalPDStore {
      */
     public LocalPDStore() {}
 
-    protected LocalPDStore(@NotNull Player player) {
+    protected LocalPDStore(@NotNull Player player, int freeRespawns) {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
 
-        this.freeRespawns = 1;
+        this.freeRespawns = freeRespawns;
     }
 
     @NotNull

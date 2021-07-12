@@ -7,8 +7,10 @@ import com.knoban.ultimates.aspects.Message;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.cardholder.OfflineCardHolder;
 import com.knoban.ultimates.cards.Card;
+import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.commands.parsables.CardParsable;
 import com.knoban.ultimates.permissions.PermissionConstants;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -23,7 +25,7 @@ public class CardCommandHandle {
 
         ACAPI api = ACAPI.getApi();
         api.addParser(Card.class, new CardParsable());
-        ACAPI.getApi().registerCommandsFromClass(plugin, CardCommandHandle.class, this);
+        api.registerCommandsFromClass(plugin, CardCommandHandle.class, this);
     }
 
     @AtlasCommand(paths = {"card", "card help", "card help 1"})
@@ -53,6 +55,13 @@ public class CardCommandHandle {
         }
     }
 
+    @AtlasCommand(paths = {"card grant <?> all"}, permission = PermissionConstants.ULTS_CARD_GRANT, classPriority = 1)
+    public void cmdCardGrant(CommandSender sender, Player target) {
+        for(Card card : Cards.getInstance().getCardInstances()) {
+            cmdCardGrant(sender, target, card);
+        }
+    }
+
     @AtlasCommand(paths = {"card grant"}, permission = PermissionConstants.ULTS_CARD_GRANT)
     public void cmdCardGrant(CommandSender sender, String target, Card card) {
         OfflineCardHolder.getOfflineCardHolder(plugin, target, -1, (success, tch) -> {
@@ -65,6 +74,13 @@ public class CardCommandHandle {
             } else
                 sender.sendMessage("§4" + target + " §c's data cannot be reached. Usually means this player is online another Ultimates server.");
         });
+    }
+
+    @AtlasCommand(paths = {"card grant <?> all"}, permission = PermissionConstants.ULTS_CARD_GRANT)
+    public void cmdCardGrant(CommandSender sender, String target) {
+        for(Card card : Cards.getInstance().getCardInstances()) {
+            cmdCardGrant(sender, target, card);
+        }
     }
 
     @AtlasCommand(paths = {"card revoke"}, permission = PermissionConstants.ULTS_CARD_REVOKE, classPriority = 1)
@@ -113,13 +129,18 @@ public class CardCommandHandle {
     @AtlasCommand(paths = {"card toggle"}, permission = PermissionConstants.ULTS_CARD_TOGGLE)
     public void cmdCardToggle(CommandSender sender, Card card) {
         if(card.isEnabled()) {
-            Bukkit.broadcastMessage("§4An admin has disabled the card: " + card.getInfo().display());
+            plugin.getServer().sendMessage(Component.text("§4An admin has disabled the card: " + card.getInfo().display()));
             for(Player pl : card.getDrawnPlayers()) {
                 pl.sendMessage("§4You had this card drawn. It has been temporarily discarded.");
             }
             card.setEnabled(false);
+            for(Player p : card.getDrawnPlayers()) {
+                CardHolder holder = CardHolder.getCardHolder(p);
+                if(holder.isLoaded())
+                    holder.discardCards(card);
+            }
         } else {
-            Bukkit.broadcastMessage("§aAn admin has enabled the card: " + card.getInfo().display());
+            plugin.getServer().sendMessage(Component.text("§aAn admin has enabled the card: " + card.getInfo().display()));
             card.setEnabled(true);
         }
     }

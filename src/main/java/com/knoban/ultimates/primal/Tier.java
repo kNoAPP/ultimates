@@ -1,5 +1,6 @@
 package com.knoban.ultimates.primal;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -59,7 +60,7 @@ public enum Tier {
 
         this.placeholder = new ItemStack(Material.getMaterial(color + "_STAINED_GLASS_PANE"));
         ItemMeta im = placeholder.getItemMeta();
-        im.setDisplayName(display);
+        im.displayName(Component.text(display));
         placeholder.setItemMeta(im);
 
         return placeholder;
@@ -72,7 +73,7 @@ public enum Tier {
         return chance = occurrence / SUM;
     }
 
-    private static final double SUM = getSum(); // GET SUM, NOOB! hahaha
+    private static final double SUM = getSum();
     private static double getSum() {
         double sum = 0;
         for(Tier tier : Tier.values())

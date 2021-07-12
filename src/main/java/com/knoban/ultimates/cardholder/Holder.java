@@ -3,10 +3,13 @@ package com.knoban.ultimates.cardholder;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.SetOptions;
+import com.google.cloud.firestore.WriteResult;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.knoban.atlas.callbacks.GenericCallback1;
 import com.knoban.atlas.claims.Landlord;
+import com.knoban.atlas.data.firebase.AtlasFirebaseMutex;
 import com.knoban.atlas.structure.HashSetArrayList;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardpack.CardPack;
@@ -24,7 +27,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-public abstract class Holder {
+public abstract class Holder extends AtlasFirebaseMutex {
 
     protected final Ultimates plugin;
     protected final UUID uuid;
@@ -36,24 +39,25 @@ public abstract class Holder {
     protected HashSetArrayList<Card> drawnCards = new HashSetArrayList<>();
     protected ArrayList<Integer> ownedCardPacks = new ArrayList<>(CardPack.values().length);
 
-    private String thisMutex;
-    private ListenerRegistration mutexListener;
-    private Thread timeout;
-
     protected boolean loaded, battlePass;
     protected int timePlayed, maxEstateClaims, maxCardSlots, xp, maxFreeRewardedLevel, maxPremiumRewardedLevel, wisdom;
     protected long lastSeen;
 
-    private final DocumentReference firestoreReference;
+    private boolean dataSyncIssue;
+
+    private static boolean cardsDrawOnLoadSaveOnUnload = true;
 
     protected Holder(@NotNull Ultimates plugin, @NotNull UUID uuid, @NotNull String name) {
+        super(plugin.getFirebase().getFirestore(),
+                plugin.getFirebase().getFirestore().collection("cardholder").document(uuid.toString()),
+                plugin.getLogger());
+
         this.plugin = plugin;
         this.uuid = uuid;
         this.name = name;
         this.landlord = plugin.getLandManager().getLandlord(uuid);
         this.loaded = false;
-
-        this.firestoreReference = plugin.getFirebase().getFirestore().collection("cardholder").document(uuid.toString());
+        this.dataSyncIssue = false;
     }
 
     /**
@@ -341,12 +345,12 @@ public abstract class Holder {
             }
 
             for(; maxFreeRewardedLevel<currentLevel; ++maxFreeRewardedLevel)
-                plugin.getBattlepassManager().rewardFreeLevel(this, maxFreeRewardedLevel + 1);
+                plugin.getBattlepassManager().rewardFreeLevel(p, maxFreeRewardedLevel + 1);
         }
 
         if(battlePass && currentLevel > maxPremiumRewardedLevel) {
             for(; maxPremiumRewardedLevel<currentLevel; ++maxPremiumRewardedLevel)
-                plugin.getBattlepassManager().rewardPremiumLevel(this, maxPremiumRewardedLevel + 1);
+                plugin.getBattlepassManager().rewardPremiumLevel(p, maxPremiumRewardedLevel + 1);
         }
     }
 
@@ -487,6 +491,17 @@ public abstract class Holder {
                 }
 
                 loadWithoutMutex(callback);
+                listenForKarens((noError) -> {
+                    dataSyncIssue = true;
+                    plugin.getServer().getScheduler().runTask(plugin, () -> {
+                        Player p = Bukkit.getPlayer(uuid);
+                        if(p != null) {
+                            p.kickPlayer("§cData synchronization error on CardHolder data, did you login elsewhere?" +
+                                    "\n§cIf this problem continues, contact your server administrator." +
+                                    "\n§cGive them this error code: §4ults-12");
+                        }
+                    });
+                });
             });
         });
     }
@@ -527,15 +542,17 @@ public abstract class Holder {
                     battlePass = (boolean) values.getOrDefault("battlePass", false);
                     wisdom = ((Long) values.getOrDefault("wisdom", 0L)).intValue();
 
-                    for(String cardName : (Iterable<String>) values.getOrDefault("drawnCards", Collections.emptyList())) {
-                        Card card = Cards.getInstance().getCardInstance(cardName);
-                        if(card != null) { //silent skip: it will get logged when "ownedCards" are parsed
-                            toDraw.add(card);
+                    if(cardsDrawOnLoadSaveOnUnload) {
+                        for(String cardName : (Iterable<String>) values.getOrDefault("drawnCards", Collections.emptyList())) {
+                            Card card = Cards.getInstance().getCardInstanceByName(cardName);
+                            if(card != null) { //silent skip: it will get logged when "ownedCards" are parsed
+                                toDraw.add(card);
+                            }
                         }
                     }
 
                     for(String cardName : (Iterable<String>) values.getOrDefault("ownedCards", Collections.emptyList())) {
-                        Card card = Cards.getInstance().getCardInstance(cardName);
+                        Card card = Cards.getInstance().getCardInstanceByName(cardName);
                         if(card != null) {
                             ownedCards.add(card);
                         } else {
@@ -580,7 +597,8 @@ public abstract class Holder {
      * (or null if none)
      */
     protected void save(boolean block, @Nullable GenericCallback1<Boolean> callback) {
-        Firestore store = plugin.getFirebase().getFirestore();
+        if(dataSyncIssue) // Don't save the data if it will corrupt a save file.
+            return;
 
         Map<String, Object> update = new TreeMap<>();
         update.put("username", name);
@@ -594,7 +612,8 @@ public abstract class Holder {
         update.put("xp", xp);
         update.put("battlePass", battlePass);
         update.put("wisdom", wisdom);
-        update.put("drawnCards", drawnCards.stream().map(Card::getInfo).map(CardInfo::name).collect(Collectors.toList()));
+        if(cardsDrawOnLoadSaveOnUnload)
+            update.put("drawnCards", drawnCards.stream().map(Card::getInfo).map(CardInfo::name).collect(Collectors.toList()));
         update.put("ownedCards", ownedCards.stream().map(Card::getInfo).map(CardInfo::name).collect(Collectors.toList()));
         update.put("ownedCardPacks", ownedCardPacks);
 
@@ -631,154 +650,6 @@ public abstract class Holder {
         loaded = false;
     }
 
-    private void addMutex(GenericCallback1<Boolean> callback) {
-        if(thisMutex != null)
-            return;
-
-        thisMutex = UUID.randomUUID().toString();
-
-        ApiFuture<Void> future = plugin.getFirebase().getFirestore().runTransaction(transaction -> {
-            DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
-            ArrayList<String> mutex = (ArrayList<String>) snapshot.get("mutex");
-            if(mutex == null)
-                mutex = new ArrayList<>();
-            mutex.add(thisMutex);
-            Map<String, Object> map = new TreeMap<>();
-            map.put("mutex", mutex);
-            transaction.set(firestoreReference, map, SetOptions.merge());
-            return null;
-        });
-
-        ApiFutures.addCallback(future, new ApiFutureCallback<Void>() {
-            @Override
-            public void onFailure(Throwable t) {
-                plugin.getLogger().warning("Failed to create Holder mutex: " + t.getMessage());
-                callback.call(false);
-            }
-
-            @Override
-            public void onSuccess(Void result) {
-                callback.call(true);
-            }
-        }, MoreExecutors.directExecutor());
-    }
-
-    private void clearMutex() {
-        if(thisMutex == null)
-            return;
-
-        plugin.getFirebase().getFirestore().runTransaction(transaction -> {
-            DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
-            ArrayList<String> mutex = (ArrayList<String>) snapshot.get("mutex");
-            if(mutex == null)
-                mutex = new ArrayList<>();
-            mutex.clear();
-            mutex.add(thisMutex);
-            Map<String, Object> map = new TreeMap<>();
-            map.put("mutex", mutex);
-            transaction.set(firestoreReference, map, SetOptions.merge());
-            return null;
-        });
-    }
-
-    protected void removeMutex(boolean block) {
-        if(thisMutex == null)
-            return;
-
-        ApiFuture<Void> future = plugin.getFirebase().getFirestore().runTransaction(transaction -> {
-            DocumentSnapshot snapshot = transaction.get(firestoreReference).get();
-            ArrayList<String> mutex = (ArrayList<String>) snapshot.get("mutex");
-            if(mutex == null)
-                mutex = new ArrayList<>();
-            mutex.remove(thisMutex);
-            Map<String, Object> map = new TreeMap<>();
-            map.put("mutex", mutex);
-            transaction.set(firestoreReference, map, SetOptions.merge());
-            return null;
-        });
-
-        if(block) {
-            try {
-                future.get();
-                thisMutex = null;
-            } catch(InterruptedException | ExecutionException e) {
-                plugin.getLogger().warning("Failed to remove Holder mutex: " + e.getMessage());
-                thisMutex = null;
-            }
-        } else {
-            ApiFutures.addCallback(future, new ApiFutureCallback<Void>() {
-                @Override
-                public void onFailure(Throwable t) {
-                    plugin.getLogger().warning("Failed to remove Holder mutex: " + t.getMessage());
-                    thisMutex = null;
-                }
-
-                @Override
-                public void onSuccess(Void result) {
-                    thisMutex = null;
-                }
-            }, MoreExecutors.directExecutor());
-        }
-    }
-
-    private void listenToMutex(long timeoutMillis, boolean karen, GenericCallback1<Boolean> callback) {
-        if(thisMutex == null)
-            return;
-
-        this.timeout = new Thread(() -> {
-            try {
-                Thread.sleep(timeoutMillis);
-            } catch(InterruptedException e) {
-                return;
-            }
-
-            mutexListener.remove();
-            if(karen) {
-                plugin.getLogger().warning(name + "'s Holder data has been force-loaded. Possible data inconsistencies may now occur.");
-                clearMutex();
-                callback.call(true);
-            } else {
-                removeMutex(false);
-                callback.call(false);
-            }
-        });
-
-        this.mutexListener = firestoreReference.addSnapshotListener((value, error) -> {
-            if(error != null) {
-                plugin.getLogger().warning("Failed to listen for mutex: " + error.getMessage());
-                mutexListener.remove();
-                timeout.interrupt();
-                removeMutex(false); // Try to clean up if possible.
-                callback.call(false);
-                return;
-            }
-
-            if(value != null) {
-                Map<String, Object> data = value.getData();
-                ArrayList<String> mutex = (ArrayList<String>) data.get("mutex");
-                if(mutex == null || thisMutex == null || !mutex.contains(thisMutex)) {
-                    mutexListener.remove();
-                    timeout.interrupt();
-                    callback.call(false);
-                    return;
-                }
-
-                if(mutex.get(0).equals(thisMutex)) {
-                    timeout.interrupt();
-                    mutexListener.remove();
-                    callback.call(true);
-                    return;
-                }
-            }
-
-            // This lets us check once for our mutex before starting the timer.
-            // Preferable because we don't risk unnecessarily clearing the mutex.
-            // Don't use a hammer for a screw. Use a screwdriver.
-            if(timeoutMillis >= 0 && timeout.getState() == Thread.State.NEW)
-                timeout.start();
-        });
-    }
-
     /**
      * Get the projected {@link Holder} level given an amount of experience
      * @param xp - The amount of experience to get the level from
@@ -795,6 +666,22 @@ public abstract class Holder {
      */
     public static int getXpFromLevel(int level) {
         return level * 1000;
+    }
+
+    /**
+     * Should a {@link Holder}'s cards draw when loaded?
+     * @return True, if they should. False if they shouldn't
+     */
+    public static boolean isCardsDrawOnLoadSaveOnUnload() {
+        return cardsDrawOnLoadSaveOnUnload;
+    }
+
+    /**
+     * Set if a Holder's cards draw when they log in.
+     * @param cardsDrawOnLoadSaveOnUnload True, if cards should be drawn on load and saved on unload
+     */
+    public static void setCardsDrawOnLoadSaveOnUnload(boolean cardsDrawOnLoadSaveOnUnload) {
+        Holder.cardsDrawOnLoadSaveOnUnload = cardsDrawOnLoadSaveOnUnload;
     }
 
     @Override

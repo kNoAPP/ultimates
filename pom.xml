@@ -7,12 +7,12 @@
 
 	<groupId>com.knoban</groupId>
 	<artifactId>ultimates</artifactId>
-	<version>0.1.0.0</version>
+	<version>0.1.6.0</version>
 
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>16</maven.compiler.source>
+		<maven.compiler.target>16</maven.compiler.target>
+		<java.version>16</java.version>
 	</properties>
 
 	<repositories>
@@ -21,31 +21,18 @@
 			<url>https://papermc.io/repo/repository/maven-public/</url>
 		</repository>
 	</repositories>
-	<dependencies>
-		<!--
-		To get this dependency to not have errors, please follow these instructions:
-		1. For this to work, you will need a Java JDK and Maven installed on your machine with environmental variables
-			set.
-		2. Somewhere on your computer, clone https://github.com/PaperMC/Paper.
-		3. Go into the cloned folder and run ./paper jar from bash. If you're on Windows, you may need to download Git
-			from https://git-scm.com/downloads to be able to run the command from the Git prompt window. This command
-			will build PaperSpigot on your computer and also drop some needed libraries into your .m2 folder.
-		4. If you see errors in the script, chances are you did not set up your JDK or Maven environments correctly.
-			Usually the most common errors are because of misconfiguration in environmental variables.
-		5. When the script completes, reload this project and the errors should go away.
 
-		https://papermc.io/forums/t/using-nms-in-paper/5710/5
-		-->
+	<dependencies>
 		<dependency>
-			<groupId>com.destroystokyo.paper</groupId>
-			<artifactId>paper</artifactId>
-			<version>1.16.4-R0.1-SNAPSHOT</version>
+			<groupId>io.papermc.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.17.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.knoban</groupId>
 			<artifactId>atlas</artifactId>
-			<version>0.1.0.0</version>
+			<version>0.1.6.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->

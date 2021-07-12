@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.knoban.ultimates.events.CombatEnterEvent;
 import com.knoban.ultimates.events.CombatLeaveEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -85,7 +86,7 @@ public class CombatStateManager implements Listener {
 	 */
 	public void shutdown() {
 		for(Player player : new ArrayList<>(online.keySet())) {
-			onQuit(new PlayerQuitEvent(player, null));
+			onQuit(new PlayerQuitEvent(player, (Component) null, PlayerQuitEvent.QuitReason.DISCONNECTED));
 		}
 	}
 	

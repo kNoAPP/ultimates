@@ -16,7 +16,7 @@ import java.util.EnumSet;
 
 public class GeneralCardListener implements Listener {
 
-    private Ultimates plugin;
+    private final Ultimates plugin;
 
     public GeneralCardListener(Ultimates plugin) {
         this.plugin = plugin;
@@ -33,21 +33,26 @@ public class GeneralCardListener implements Listener {
             ClickType.DOUBLE_CLICK, ClickType.DROP, ClickType.NUMBER_KEY, ClickType.SHIFT_LEFT, ClickType.SHIFT_RIGHT,
             ClickType.UNKNOWN, ClickType.WINDOW_BORDER_LEFT, ClickType.WINDOW_BORDER_RIGHT);
 
-    private static final EnumSet<ClickType> disabledOneInv = EnumSet.of(ClickType.CONTROL_DROP,
+    /*private static final EnumSet<ClickType> disabledOneInv = EnumSet.of(ClickType.CONTROL_DROP,
             ClickType.DROP, ClickType.NUMBER_KEY, ClickType.UNKNOWN, ClickType.WINDOW_BORDER_LEFT,
-            ClickType.WINDOW_BORDER_RIGHT);
+            ClickType.WINDOW_BORDER_RIGHT);*/
+
     @EventHandler
     public void onInventoryMove(InventoryClickEvent e) {
         if(Items.isLocked(e.getCurrentItem())) {
-            if(e.getInventory() != null) {
+            // Paper merged inventories so this code isn't needed. It may be needed in the future if they
+            // revert the change.
+
+            //if(e.getInventory() != null) {
                 if(disabledTwoInv.contains(e.getClick())) {
                     e.setCancelled(true);
                     return;
                 }
-            } else if(disabledOneInv.contains(e.getClick())) {
+            /*} else if(disabledOneInv.contains(e.getClick())) {
+                Bukkit.broadcastMessage("Unreachable.");
                 e.setCancelled(true);
                 return;
-            }
+            }*/
         }
         if(!e.getWhoClicked().getInventory().equals(e.getClickedInventory())) {
             if(Items.isLocked(e.getCursor())) {

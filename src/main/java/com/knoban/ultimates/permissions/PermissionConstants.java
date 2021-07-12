@@ -11,6 +11,8 @@ public class PermissionConstants {
 
     public static final String ULTS_WISDOM = "ults.wisdom";
 
+    public static final String ULTS_CARDSLOT = "ults.cardslot";
+
     public static final String ULTS_CARDPACK = "ults.cardpack";
 
     public static final String ULTS_BATTLEPASS = "ults.battlepass";

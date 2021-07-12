@@ -1,12 +1,14 @@
 package com.knoban.ultimates.cardpack.animations;
 
 import com.knoban.atlas.gui.GUI;
+import com.knoban.atlas.rewards.Reward;
 import com.knoban.atlas.utils.SoundBundle;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.aspects.Items;
-import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.cardpack.CardPack;
-import com.knoban.ultimates.rewards.Reward;
+import com.knoban.ultimates.primal.Tier;
+import com.knoban.ultimates.rewards.CardReward;
+import com.knoban.ultimates.rewards.WisdomReward;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -44,9 +46,8 @@ public class SpinnerCardPackAnimation extends CardPackAnimation {
         // Reward fulfillment
         spinner.setOnCloseCallback(() -> {
             if(willAward) {
-                CardHolder cardHolder = CardHolder.getCardHolder(awardTo);
                 for(Reward reward : rewards)
-                    reward.reward(cardHolder);
+                    reward.reward(awardTo);
             }
         });
     }
@@ -68,7 +69,20 @@ public class SpinnerCardPackAnimation extends CardPackAnimation {
         spinner.shiftRow(1, -1);
         spinner.shiftRow(2, -1);
         spinner.setSlot(17, randomReward.getIcon());
-        spinner.setSlot(26, randomReward.getTier().getPlaceholder());
+        if(randomReward instanceof CardReward) {
+            CardReward cardReward = (CardReward) randomReward;
+            spinner.setSlot(26, cardReward.getCard().getInfo().tier().getPlaceholder());
+        } else if(randomReward instanceof WisdomReward) {
+            WisdomReward wisdomReward = (WisdomReward) randomReward;
+            if(wisdomReward.getAmount() < 200)
+                spinner.setSlot(26, Tier.COMMON.getPlaceholder());
+            else if(wisdomReward.getAmount() < 500)
+                spinner.setSlot(26, Tier.RARE.getPlaceholder());
+            else if(wisdomReward.getAmount() < 2000)
+                spinner.setSlot(26, Tier.EPIC.getPlaceholder());
+            else
+                spinner.setSlot(26, Tier.LEGENDARY.getPlaceholder());
+        }
 
         playAnimationTickSound();
 

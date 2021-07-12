@@ -8,13 +8,11 @@ import com.knoban.ultimates.primal.Tier;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -39,11 +37,17 @@ public class FlashbangCard extends Card {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEggThrow(ProjectileLaunchEvent e) {
+        if(e.getEntity() instanceof Egg egg && egg.getShooter() instanceof Player p && drawn.contains(p)) {
+            egg.setMetadata(METADATA, new FixedMetadataValue(plugin, true));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEggThrow(PlayerEggThrowEvent e) {
-        Player p = e.getPlayer();
-        if(drawn.contains(p)) {
+        Egg egg = e.getEgg();
+        if(egg.hasMetadata(METADATA)) {
             e.setHatching(false);
-            e.getEgg().setMetadata(METADATA, new FixedMetadataValue(plugin, true));
         }
     }
 

@@ -1,130 +1,131 @@
 package com.knoban.ultimates.cards;
 
 import com.knoban.ultimates.Ultimates;
-import com.knoban.ultimates.cards.impl.*;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
+import org.checkerframework.checker.units.qual.A;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public final class Cards {
 
-    private static final List<Class<? extends Card>> cards = Arrays.asList(
-            OOCRegenerationCard.class, CultivatorCard.class, WormCard.class, RubberSkinCard.class,
-            ForceLevitationCard.class, StrangeBowCard.class, VeganCard.class, RubberProjectileCard.class,
-            ZeroGravityProjectileCard.class, DeflectionCard.class, MagmaWalkerCard.class,
-            SplashPotionOfGetHisAssCard.class, ScavengerCard.class, LumberjackCard.class, LuckCard.class, SoulCard.class,
-            FallCard.class, TwinsCard.class, EnlightenedCard.class, PokeCard.class, TeemoCard.class, FlashbangCard.class,
-            DruidCard.class, XRayCard.class, PortalCard.class, JuggernautCard.class, TankCard.class, HotHandsCard.class,
-            DryadsGiftCard.class, RunnersDietCard.class, TerrorCard.class, PantherCard.class, SpeedCard.class,
-            SteadyHandsCard.class, AnchorCard.class, UnyieldingMightCard.class, FalconCard.class, ParleyCard.class,
-            SchoolingCard.class, ShadowsUpriseCard.class, RealityPhaseCard.class);
-
     private static final Cards INSTANCE = new Cards();
 
-    private final List<String> cardNames;
-    private final List<Card> cardInstances;
-    private final List<Card> cardInstancesByTierAscending;
-    private final List<Card> cardInstancesByTierDescending;
-    private final List<Card> cardInstancesByPrimal;
-    private final Map<String, Card> cardInstancesNameMap;
-    private final Map<Class<? extends Card>, Card> cardInstancesClassMap;
-    private final Map<Tier, ArrayList<Card>> cardInstancesTierMap;
+    private final List<Class<? extends Card>> cards = new ArrayList<>();
+    private final Map<String, Class<? extends Card>> cardsByName = new HashMap<>();
+    private final List<String> cardNames = new ArrayList<>();
 
-    private Cards() {
-        List<String> cardNames = new ArrayList<>();
-        List<Card> cardInstances = new ArrayList<>();
-        List<Card> cardInstancesByTierAscending = new ArrayList<>();
-        List<Card> cardInstancesByTierDescending = new ArrayList<>();
-        List<Card> cardInstancesByPrimal = new ArrayList<>();
-        HashMap<Class<? extends Card>, Card> cardInstancesClassMap = new HashMap<>();
-        HashMap<String, Card> cardInstancesNameMap = new HashMap<>();
-        TreeMap<Tier, ArrayList<Card>> cardInstancesTierMap = new TreeMap<>();
+    private final Map<Class<? extends Card>, Card> cardInstances = new HashMap<>();
+    private final Map<String, Card> cardInstancesByName = new HashMap<>();
+    private final Map<Tier, ArrayList<Card>> cardInstancesByTier = new TreeMap<>();
+    private final Map<PrimalSource, ArrayList<Card>> cardInstancesByPrimal = new TreeMap<>();
 
+    private final List<Card> cardInstancesByTierAscending = new ArrayList<>();
+    private final List<Card> cardInstancesByTierDescending = new ArrayList<>();
+    private final List<Card> cardInstancesByPrimalAscending = new ArrayList<>();
 
-        for(Class<? extends Card> card : cards) {
-            try {
-                Card c = card.getConstructor(Ultimates.class).newInstance(Ultimates.getPlugin());
-                cardNames.add(c.info.name());
-                cardInstances.add(c);
-                cardInstancesClassMap.put(card, c);
-                cardInstancesNameMap.put(c.info.name(), c);
-            } catch(Exception ex) {
-                ex.printStackTrace();
-                Ultimates.getPlugin().getLogger().warning("Failed to initialize card (" + card.getName() + "): " + ex.getMessage());
-            }
+    public void addCard(@NotNull Class<? extends Card> card) {
+        cards.add(card);
+        String cardName = card.getAnnotation(CardInfo.class).name();
+        cardsByName.put(cardName, card);
+        cardNames.add(cardName);
+
+        try {
+            Card c = card.getConstructor(Ultimates.class).newInstance(Ultimates.getPlugin());
+            cardInstances.put(card, c);
+            cardInstancesByName.put(c.info.name(), c);
+            cardInstancesByTier.computeIfAbsent(c.info.tier(), k -> new ArrayList<>()).add(c);
+            cardInstancesByPrimal.computeIfAbsent(c.info.source(), k -> new ArrayList<>()).add(c);
+
+            reSortCards();
+        } catch(Exception e) {
+            Ultimates.getPlugin().getLogger().warning("Failed to initialize card (" + card.getName() + "): " + e.getMessage());
+            e.printStackTrace();
         }
+    }
 
-        // This isn't optimized and could be. However, since it is only ran once, I'm taking the easier route.
+    public void removeCard(@NotNull Class<? extends Card> card) {
+        cards.remove(card);
+        String cardName = card.getAnnotation(CardInfo.class).name();
+        cardsByName.remove(cardName);
+        cardNames.remove(cardName);
+
+        Card c = cardInstances.remove(card);
+        if(c == null)
+            return;
+
+        cardInstancesByName.remove(c.info.name());
+        cardInstancesByTier.computeIfAbsent(c.info.tier(), k -> new ArrayList<>()).remove(c);
+        cardInstancesByPrimal.computeIfAbsent(c.info.source(), k -> new ArrayList<>()).remove(c);
+
+        reSortCards();
+    }
+
+    // TODO Optimize this to not be n^2 runtime in conjunction with startup.
+    private void reSortCards() {
+        cardInstancesByTierAscending.clear();
+        cardInstancesByTierDescending.clear();
+        cardInstancesByPrimalAscending.clear();
+
         for(Tier t : Tier.values()) {
-            ArrayList<Card> primalCards = new ArrayList<>();
-            for(Card c : cardInstances) {
-                if(c.info.tier() == t) {
-                    cardInstancesByTierAscending.add(c);
-                    primalCards.add(c);
-                }
-            }
-            cardInstancesTierMap.put(t, primalCards);
+            cardInstancesByTierAscending.addAll(cardInstancesByTier.getOrDefault(t, new ArrayList<>()));
+            cardInstancesByTierDescending.addAll(cardInstancesByTier.getOrDefault(t, new ArrayList<>()));
         }
-
-        for(PrimalSource ps : PrimalSource.values()) {
-            for(Card c : cardInstances) {
-                if(c.info.source() == ps) {
-                    cardInstancesByPrimal.add(c);
-                }
-            }
-        }
-
-        cardInstancesByTierDescending.addAll(cardInstancesByTierAscending);
         Collections.reverse(cardInstancesByTierDescending);
 
-        this.cardNames = Collections.unmodifiableList(cardNames);
-        this.cardInstances = Collections.unmodifiableList(cardInstances);
-        this.cardInstancesByTierAscending = Collections.unmodifiableList(cardInstancesByTierAscending);
-        this.cardInstancesByTierDescending = Collections.unmodifiableList(cardInstancesByTierDescending);
-        this.cardInstancesByPrimal = Collections.unmodifiableList(cardInstancesByPrimal);
-        this.cardInstancesClassMap = Collections.unmodifiableMap(cardInstancesClassMap);
-        this.cardInstancesNameMap = Collections.unmodifiableMap(cardInstancesNameMap);
-        this.cardInstancesTierMap = Collections.unmodifiableMap(cardInstancesTierMap);
+        for(PrimalSource ps : PrimalSource.values())
+            cardInstancesByPrimalAscending.addAll(cardInstancesByPrimal.getOrDefault(ps, new ArrayList<>()));
     }
 
-    public List<String> getCardNames() {
-        return cardNames;
+    @NotNull
+    public List<Class<? extends Card>> getCards() {
+        return Collections.unmodifiableList(cards);
     }
 
+    @NotNull
+    public Map<String, Class<? extends Card>> getCardByName() {
+        return Collections.unmodifiableMap(cardsByName);
+    }
+
+    @Nullable
+    public <T extends Card> T getCardInstance(@NotNull Class<T> card) {
+        return (T) cardInstances.get(card);
+    }
+
+    @Nullable
+    public Card getCardInstanceByName(@NotNull String name) {
+        return cardInstancesByName.get(name);
+    }
+
+    @NotNull
     public List<Card> getCardInstances() {
-        return cardInstances;
+        return getCardInstancesByPrimal();
     }
 
+    @NotNull
     public List<Card> getCardInstancesByTierAscending() {
-        return cardInstancesByTierAscending;
+        return Collections.unmodifiableList(cardInstancesByTierAscending);
     }
 
+    @NotNull
     public List<Card> getCardInstancesByTierDescending() {
-        return cardInstancesByTierDescending;
+        return Collections.unmodifiableList(cardInstancesByTierDescending);
     }
 
+    @NotNull
     public List<Card> getCardInstancesByPrimal() {
-        return cardInstancesByPrimal;
+        return Collections.unmodifiableList(cardInstancesByPrimalAscending);
     }
 
-    public Card getCardInstance(String name) {
-        return cardInstancesNameMap.get(name);
+    @NotNull
+    public List<Card> getCardInstancesFilterTier(@NotNull Tier tier) {
+        return Collections.unmodifiableList(cardInstancesByTier.getOrDefault(tier, new ArrayList<>()));
     }
 
-    public List<Card> getCardInstancesFilterTier(Tier tier) {
-        return cardInstancesTierMap.get(tier);
-    }
-
-    public <T extends Card> T getCardInstance(Class<T> card) {
-        return (T) cardInstancesClassMap.get(card);
-    }
-
-    public static List<Class<? extends Card>> getCardClasses() {
-        return cards;
-    }
-
-    public static CardInfo getInfo(Class<? extends Card> card) {
+    @Nullable
+    public static CardInfo getInfo(@NotNull Class<? extends Card> card) {
         return card.getAnnotation(CardInfo.class);
     }
 

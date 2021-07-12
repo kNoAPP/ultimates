@@ -1,26 +1,31 @@
 package com.knoban.ultimates;
 
+import com.knoban.atlas.battlepass.BattlePassManager;
 import com.knoban.atlas.claims.GenericEstateListener;
 import com.knoban.atlas.claims.LandManager;
 import com.knoban.atlas.commandsII.ACAPI;
 import com.knoban.atlas.data.firebase.AtlasFirebase;
 import com.knoban.atlas.data.local.DataHandler.YML;
+import com.knoban.atlas.missions.MissionManager;
+import com.knoban.atlas.missions.Missions;
+import com.knoban.atlas.missions.bossbar.BossBarAnimationHandler;
+import com.knoban.atlas.rewards.Rewards;
 import com.knoban.ultimates.aspects.*;
 import com.knoban.ultimates.aspects.warmup.ActionWarmupManager;
-import com.knoban.ultimates.battlepass.BattlePassManager;
 import com.knoban.ultimates.cardholder.CardHolder;
+import com.knoban.ultimates.cardholder.Holder;
 import com.knoban.ultimates.cardholder.OfflineCardHolder;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.cards.GeneralCardListener;
+import com.knoban.ultimates.cards.impl.*;
 import com.knoban.ultimates.claims.UltimatesEstateListener;
 import com.knoban.ultimates.commands.*;
 import com.knoban.ultimates.commands.parsables.PrimalSourceParsable;
-import com.knoban.ultimates.missions.MissionManager;
-import com.knoban.ultimates.missions.bossbar.BossBarAnimationHandler;
 import com.knoban.ultimates.player.LocalPDStoreManager;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
+import com.knoban.ultimates.rewards.*;
 import com.knoban.ultimates.tutorial.HelperSuggestionsListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,9 +34,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Ultimates! Get cards, unlock special abilities, collect them all. Each card gives you a unique effect ingame.
+ * Join a primal, claim some land, start some conflict. Use your cards to get an edge on other players.
+ * <br><br>
+ * This project was written for GodComplex LLC. This copy of code is a branch of Ultimates containing all of
+ * Alden's solo work before the game was picked up and maintained by the rest of the team. It serves the purpose
+ * of being an NDA'd Java profile piece considering the scale of the game. (2019-2021)
+ *
+ * @author Alden Bansemer (kNoAPP)
+ */
 public class Ultimates extends JavaPlugin {
 
 	private YML config;
@@ -98,10 +113,8 @@ public class Ultimates extends JavaPlugin {
 		config = new YML(this, "/config.yml");
 		FileConfiguration fc = config.getCachedYML();
 
-		if(config.wasCreated()) {
-			fc.set("uuid", UUID.randomUUID().toString());
-			config.saveYML();
-		}
+		Holder.setCardsDrawOnLoadSaveOnUnload(fc.getBoolean("Cards.Draw-On-Load-Save-On-Unload", true));
+		CardHolder.setPrimalsUseScoreboard(fc.getBoolean("Primals.Use-Scoreboard", true));
 
 		try {
 			firebase = new AtlasFirebase(fc.getString("Firebase.DatabaseURL"), new File(getDataFolder(),
@@ -127,6 +140,8 @@ public class Ultimates extends JavaPlugin {
 		
 		getLogger().info("Importing aspects...");
 
+		FileConfiguration fc = config.getCachedYML();
+
 		ACAPI.getApi().addParser(PrimalSource.class, new PrimalSourceParsable());
 
 		lpdsm = new LocalPDStoreManager(this);
@@ -134,30 +149,79 @@ public class Ultimates extends JavaPlugin {
 		moveCallbackManager = new MoveCallbackManager(this);
 		actionWarmupManager = new ActionWarmupManager(this);
 		bossBarAnimationHandler = new BossBarAnimationHandler(this);
-		battlepassManager = new BattlePassManager(this);
-		missionManager = new MissionManager(this);
+		registerMissionsToAtlas();
+		registerRewardsToAtlas();
+		registerCardsToUltimates();
+		battlepassManager = new BattlePassManager(this, firebase, "/battlepass");
+		missionManager = new MissionManager(this, firebase, "/missions");
 		aloha = new AlohaListener(this);
 		gcl = new GeneralCardListener(this);
 
 		new GeneralListener(this);
-		new HelperSuggestionsListener(this);
+		if(fc.getBoolean("Tutorial.Helpful-Suggestions", true))
+			new HelperSuggestionsListener(this);
 
-		new UltimatesCommandHandle(this);
-		new RecallCommandHandle(this);
-		new CardCommandHandle(this);
-		new ChunkCommandHandle(this);
-		new FlashCommandHandle(this);
-		new LevelCommandHandle(this);
-		new BattlePassCommandHandle(this);
-		new WisdomCommandHandle(this);
-		new CardpackCommandHandle(this);
-		new EstateCommandHandle(this);
-		new SoundgenCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.BattlePass", true))
+			new BattlePassCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Card", true))
+			new CardCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.CardPack", true))
+			new CardPackCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.CardSlot", true))
+			new CardSlotCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Estate", true))
+			new EstateCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Flash", true))
+			new FlashCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Level", true))
+			new LevelCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Recall", true))
+			new RecallCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Soundgen", true))
+			new SoundgenCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Ultimates", true))
+			new UltimatesCommandHandle(this);
+		if(fc.getBoolean("Command-Toggle.Wisdom", true))
+			new WisdomCommandHandle(this);
+
+		// Disable cards
+		for(String cardName : fc.getStringList("Cards.DisableThese")) {
+			Card c = Cards.getInstance().getCardInstanceByName(cardName);
+			if(c != null) {
+				c.setEnabled(false);
+			}
+		}
 
 		for(Player pl : Bukkit.getOnlinePlayers()) {
 			CardHolder.getCardHolder(pl).login();
 			aloha.join(pl);
 		}
+	}
+
+	private void registerCardsToUltimates() {
+		Cards cards = Cards.getInstance();
+		Arrays.asList(OOCRegenerationCard.class, CultivatorCard.class, WormCard.class, RubberSkinCard.class,
+				ForceLevitationCard.class, StrangeBowCard.class, VeganCard.class, RubberProjectileCard.class,
+				ZeroGravityProjectileCard.class, DeflectionCard.class, MagmaWalkerCard.class,
+				SplashPotionOfGetHisAssCard.class, ScavengerCard.class, LumberjackCard.class, LuckCard.class,
+				SoulCard.class, FallCard.class, TwinsCard.class, EnlightenedCard.class, PokeCard.class, TeemoCard.class,
+				FlashbangCard.class, DruidCard.class, XRayCard.class, PortalCard.class, JuggernautCard.class,
+				TankCard.class, HotHandsCard.class, DryadsGiftCard.class, RunnersDietCard.class,
+				PantherCard.class, SpeedCard.class, SteadyHandsCard.class, AnchorCard.class, UnyieldingMightCard.class,
+				FalconCard.class, ParleyCard.class, SchoolingCard.class, ShadowsUpriseCard.class, RealityPhaseCard.class
+		).forEach(cards::addCard);
+	}
+
+	private void registerMissionsToAtlas() {
+		Missions missions = Missions.getInstance();
+		// TODO Register missions when created.
+	}
+
+	private void registerRewardsToAtlas() {
+		Rewards rewards = Rewards.getInstance();
+		Arrays.asList(CardReward.class, CardSlotReward.class, EstateClaimReward.class, ExperienceReward.class,
+				WisdomReward.class
+		).forEach(rewards::addReward);
 	}
 
 	public void reportInfo() {

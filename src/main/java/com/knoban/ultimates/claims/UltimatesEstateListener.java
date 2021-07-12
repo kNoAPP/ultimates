@@ -21,8 +21,8 @@ public class UltimatesEstateListener implements Listener {
 
     public static final String SHOOTER = "ults_block_shooter";
 
-    private Ultimates plugin;
-    private LandManager lm;
+    private final Ultimates plugin;
+    private final LandManager lm;
 
     public UltimatesEstateListener(@NotNull Ultimates plugin, @NotNull LandManager lm) {
         this.plugin = plugin;
@@ -42,7 +42,7 @@ public class UltimatesEstateListener implements Listener {
             if(estate != null) {
                 if(shot.hasMetadata(SHOOTER)) {
                     Player shooter = (Player) shot.getMetadata(SHOOTER).get(0).value();
-                    if(shooter == null || !estate.hasPermission(shooter.getUniqueId(), EstatePermission.PLACE.getCode())) {
+                    if(shooter != null && !estate.hasPermission(shooter.getUniqueId(), EstatePermission.PLACE.getCode())) {
                         e.setCancelled(true);
                         shot.remove();
 

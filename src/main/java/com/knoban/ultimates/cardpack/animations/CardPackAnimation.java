@@ -1,9 +1,9 @@
 package com.knoban.ultimates.cardpack.animations;
 
+import com.knoban.atlas.rewards.Reward;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardholder.CardHolder;
 import com.knoban.ultimates.cardpack.CardPack;
-import com.knoban.ultimates.rewards.Reward;
 import org.bukkit.entity.Player;
 
 public abstract class CardPackAnimation {

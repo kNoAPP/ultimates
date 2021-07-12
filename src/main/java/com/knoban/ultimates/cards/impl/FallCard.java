@@ -3,6 +3,7 @@ package com.knoban.ultimates.cards.impl;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.CardInfo;
+import com.knoban.ultimates.cards.base.Silenceable;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
         source = PrimalSource.SKY,
         tier = Tier.RARE
 )
-public class FallCard extends Card {
+public class FallCard extends Card implements Silenceable {
 
     public FallCard(Ultimates plugin) {
         super(plugin);
@@ -30,7 +31,7 @@ public class FallCard extends Card {
     public void onPlayerDamage(EntityDamageEvent e) {
         if(e.getEntity() instanceof Player) {
             Player p = (Player) e.getEntity();
-            if(drawn.contains(p) && e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            if(drawn.contains(p) && !silencedPlayers.contains(p.getUniqueId()) && e.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 e.setDamage(0);
                 e.setCancelled(true);
             }

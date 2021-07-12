@@ -18,7 +18,7 @@ import java.util.UUID;
 public class SoundgenCommandHandle {
 
 	private final Ultimates plugin;
-	private final List<UUID> soundgen = new ArrayList<UUID>();
+	private final List<UUID> soundgen = new ArrayList<>();
 
 	public SoundgenCommandHandle(Ultimates plugin) {
 		this.plugin = plugin;

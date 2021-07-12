@@ -51,7 +51,7 @@ public class HelperSuggestionsListener implements Listener {
             createClaimsSuggestion.put(p.getUniqueId(), true);
         } else if(b.getType() == Material.CHEST && addPlayersToClaimSuggestion.getIfPresent(p.getUniqueId()) == null) {
             Estate estate = plugin.getLandManager().getEstate(b.getChunk());
-            if(estate != null && estate.getOwner().equals(p.getUniqueId())) {
+            if(estate != null && estate.getOwner() != null && estate.getOwner().equals(p.getUniqueId())) {
                 p.sendMessage("");
                 p.sendMessage("§b----------§2TIP§b----------");
                 p.sendMessage("§eGive players access to your claim with the command:");

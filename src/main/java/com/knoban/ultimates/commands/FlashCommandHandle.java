@@ -17,7 +17,7 @@ public class FlashCommandHandle {
 	private final Ultimates plugin;
 
 	private static final long FLASH_COOLDOWN = 10000;
-	private Cache<UUID, Cooldown> cache = CacheBuilder.newBuilder()
+	private final Cache<UUID, Cooldown> cache = CacheBuilder.newBuilder()
 			.expireAfterWrite(FLASH_COOLDOWN, TimeUnit.MILLISECONDS)
 			.build();
 
@@ -45,7 +45,7 @@ public class FlashCommandHandle {
 			} else
 				sender.sendMessage("§cYou need at least one card drawn to flash!");
 		} else {
-			sender.sendMessage("§cYou can flash cards in §4" + cd.toTimestampString() + " seconds§c.");
+			sender.sendMessage("§cYou can flash cards in §4" + cd.toTimestampString() + "§c.");
 		}
 	}
 }

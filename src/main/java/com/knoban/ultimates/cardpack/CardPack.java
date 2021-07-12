@@ -1,18 +1,17 @@
 package com.knoban.ultimates.cardpack;
 
+import com.knoban.atlas.rewards.Reward;
 import com.knoban.atlas.utils.Tools;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.cardholder.CardHolder;
-import com.knoban.ultimates.cardholder.Holder;
 import com.knoban.ultimates.cardpack.animations.CardPackAnimation;
 import com.knoban.ultimates.cardpack.animations.SpinnerCardPackAnimation;
 import com.knoban.ultimates.cardpack.animations.TriSpinnerCardPackAnimation;
 import com.knoban.ultimates.cards.Card;
 import com.knoban.ultimates.cards.Cards;
 import com.knoban.ultimates.primal.Tier;
-import com.knoban.ultimates.rewards.Reward;
-import com.knoban.ultimates.rewards.impl.CardReward;
-import com.knoban.ultimates.rewards.impl.WisdomReward;
+import com.knoban.ultimates.rewards.CardReward;
+import com.knoban.ultimates.rewards.WisdomReward;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -77,13 +76,13 @@ public enum CardPack {
                             if(!toReward.getOwnedCards().contains(randomCard)) {
                                 return new CardReward(randomCard, null) {
                                     @Override
-                                    public void reward(Holder holder) {
-                                        if(holder.getOwnedCards().contains(randomCard)) {
+                                    public void reward(@NotNull Player p) {
+                                        if(toReward.getOwnedCards().contains(randomCard)) {
                                             showTo.playSound(showTo.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7F, 0.6F);
                                             showTo.sendMessage("§5You rolled a duplicate card! §bHere's " + wisdomAmt + " wisdom instead.");
                                             return;
                                         }
-                                        super.reward(holder);
+                                        super.reward(p);
                                     }
                                 };
                             } else
@@ -92,7 +91,7 @@ public enum CardPack {
                             break;
                     }
                 }
-                return new WisdomReward(wisdomAmt >= 200 ? Tier.RARE : Tier.COMMON, wisdomAmt);
+                return new WisdomReward(wisdomAmt);
             case EPIC:
                 final int wisdomEpicAmt = (int) (chance * 1000) + 500;
                 List<Card> tieredCards = Cards.getInstance().getCardInstancesFilterTier(Tier.EPIC);
@@ -101,21 +100,21 @@ public enum CardPack {
                     if(!toReward.getOwnedCards().contains(randomCard)) {
                         return new CardReward(randomCard, null) {
                             @Override
-                            public void reward(Holder holder) {
-                                if(holder.getOwnedCards().contains(randomCard)) {
+                            public void reward(@NotNull Player p) {
+                                if(toReward.getOwnedCards().contains(randomCard)) {
                                     showTo.playSound(showTo.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.7F, 0.6F);
                                     showTo.sendMessage("§5You rolled a duplicate card! §bHere's " + wisdomEpicAmt + " wisdom instead.");
                                     return;
                                 }
-                                super.reward(holder);
+                                super.reward(p);
                             }
                         };
                     }
                 }
-                return new WisdomReward(Tier.EPIC, wisdomEpicAmt);
+                return new WisdomReward(wisdomEpicAmt);
         }
         int wisdomAmt = (int) (chance * 200) + 50;
-        return new WisdomReward(wisdomAmt >= 200 ? Tier.RARE : Tier.COMMON, wisdomAmt);
+        return new WisdomReward(wisdomAmt);
     }
 
 

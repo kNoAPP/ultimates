@@ -7,25 +7,21 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CardParsable implements ACParsable<Card> {
 
-    private final List<String> SUGGESTIONS = Cards.getInstance().getCardNames();
-
-    private List<String> generateDefaultSuggestions() {
-        return SUGGESTIONS;
-    }
-
     @Nullable
     @Override
     public Card parse(@NotNull CommandSender sender, @NotNull String arg) {
-        return Cards.getInstance().getCardInstance(arg);
+        return Cards.getInstance().getCardInstanceByName(arg);
     }
 
     @Nullable
     @Override
     public List<String> defaultSuggestions(@NotNull CommandSender sender) {
-        return SUGGESTIONS;
+        return new ArrayList<>(Cards.getInstance().getCardByName().keySet());
     }
 }

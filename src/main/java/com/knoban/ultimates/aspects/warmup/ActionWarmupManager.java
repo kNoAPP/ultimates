@@ -5,6 +5,7 @@ import com.knoban.ultimates.aspects.CombatStateManager;
 import com.knoban.ultimates.aspects.MoveCallbackManager;
 import com.knoban.ultimates.events.CardDiscardEvent;
 import com.knoban.ultimates.events.CombatEnterEvent;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -63,7 +64,7 @@ public final class ActionWarmupManager implements Listener {
 	 */
 	public void shutdown() {
 		for(Player player : new ArrayList<>(playerToTasks.keySet())) {
-			onQuit(new PlayerQuitEvent(player, null));
+			onQuit(new PlayerQuitEvent(player, (Component) null, PlayerQuitEvent.QuitReason.DISCONNECTED));
 		}
 	}
 	
