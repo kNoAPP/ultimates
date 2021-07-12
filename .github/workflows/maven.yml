@@ -35,7 +35,6 @@ jobs:
     - name: Clone Ultimates
       uses: actions/checkout@v2
       with:
-        repository: kNoAPP/Ultimates
         token: ${{ secrets.PAT_GITHUB }}
         path: Ultimates
     - name: Build Atlas
