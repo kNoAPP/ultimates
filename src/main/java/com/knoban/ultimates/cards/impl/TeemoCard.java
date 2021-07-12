@@ -1,5 +1,6 @@
 package com.knoban.ultimates.cards.impl;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.knoban.atlas.scheduler.ClockedTask;
 import com.knoban.atlas.scheduler.ClockedTaskManager;
@@ -132,5 +133,22 @@ public class TeemoCard extends Card {
         ItemStack[] armor = p.getInventory().getArmorContents();
         savedArmor.put(p.getUniqueId(), armor);
         p.getInventory().setArmorContents(EMPTY_ARMOR);
+    }
+
+    // If a player equips armor while invisible, give them the hidden old armor.
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onArmorChange(PlayerArmorChangeEvent e) {
+        Player p = e.getPlayer();
+        if(drawn.contains(p) && savedArmor.get(p.getUniqueId()) != null) {
+            ItemStack[] newArmor = p.getInventory().getArmorContents();
+            ItemStack[] armor = savedArmor.get(p.getUniqueId());
+            for(int i=0; i<newArmor.length; ++i) {
+                if(newArmor[i] != null) {
+                    p.getInventory().addItem(armor[i]);
+                    armor[i] = newArmor[i];
+                }
+            }
+            p.getInventory().setArmorContents(EMPTY_ARMOR);
+        }
     }
 }
