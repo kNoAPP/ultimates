@@ -123,6 +123,7 @@ public class TeemoCard extends Card {
         ItemStack[] newArmor = p.getInventory().getArmorContents();
         for(int i=0; i<newArmor.length; ++i) {
             if(newArmor[i] != null) {
+                if(armor[i] != null)
                 p.getInventory().addItem(armor[i]);
                 armor[i] = newArmor[i];
             }
