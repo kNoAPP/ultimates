@@ -30,7 +30,7 @@ public class FlashbangCard extends Card {
 
     public static final String METADATA = "ults_flashbang";
 
-    public static final int EFFECT_ON_MOBS_SECS = 5;
+    public static final int EFFECT_ON_MOBS_SECS = 8;
 
     public FlashbangCard(Ultimates plugin) {
         super(plugin);
