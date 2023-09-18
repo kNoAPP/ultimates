@@ -1,11 +1,9 @@
 package com.knoban.ultimates.aspects.warmup;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.aspects.MoveCallbackManager;
 import com.knoban.ultimates.cards.Card;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -117,8 +115,7 @@ public final class ActionWarmupTask {
 				plugin.getMoveCallbackManager().unregister(player, registeredMovement);
 			}
 			if(onCompleted != null) {
-				try (Timing ignored = Timings.ofStart(plugin, getClass().getSimpleName()
-						+ " - " + onCompleted.getClass().getName())) {
+				try {
 					onCompleted.onCompleted(this);
 				} catch (Throwable t) {
 					plugin.getLogger().log(Level.SEVERE, "Error handling completed callback in "
@@ -138,8 +135,7 @@ public final class ActionWarmupTask {
 			plugin.getMoveCallbackManager().tryUnregister(player, registeredMovement);
 		}
 		if(onInterrupted != null) {
-			try (Timing ignored = Timings.ofStart(plugin, getClass().getSimpleName()
-					+ " - " + onInterrupted.getClass().getName())) {
+			try {
 				onInterrupted.onInterrupted(this, reason);
 			} catch (Throwable t) {
 				plugin.getLogger().log(Level.SEVERE, "Error handling interrupted callback in "
@@ -150,7 +146,6 @@ public final class ActionWarmupTask {
 	
 	static final class TickHandler {
 		private final JavaPlugin plugin;
-		private final Timing timing;
 		private final ActionWarmupTaskTemplate.TickHandler handler;
 		private final int intervalTicks;
 		private int remainingDelayTicks;
@@ -158,7 +153,6 @@ public final class ActionWarmupTask {
 		
 		TickHandler(JavaPlugin plugin, ActionWarmupTaskTemplate.TickHandler handler, int intervalTicks, int delayTicks) {
 			this.plugin = plugin;
-			timing = Timings.of(plugin, ActionWarmupTask.class.getSimpleName() + " - " + handler.getClass().getName());
 			this.handler = handler;
 			this.intervalTicks = intervalTicks;
 			remainingDelayTicks = delayTicks;
@@ -169,14 +163,12 @@ public final class ActionWarmupTask {
 				remainingDelayTicks--;
 			} else {
 				if(elapsedTicks % intervalTicks == 0) {
-					timing.startTiming();
 					try {
 						handler.onTick(task, elapsedTicks / intervalTicks, elapsedTicks);
 					} catch (Throwable t) {
 						plugin.getLogger().log(Level.SEVERE, "Error calling tick handler in "
 								+ ActionWarmupTask.class.getSimpleName(), t);
 					}
-					timing.stopTiming();
 				}
 				elapsedTicks++;
 			}

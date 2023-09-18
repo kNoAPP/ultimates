@@ -87,7 +87,6 @@ public class Ultimates extends JavaPlugin {
 			getLogger().info("3. Imported the admin key to the Ultimates plugin folder.");
 			getLogger().info("  - See (https://console.firebase.google.com/u/0/project/_/settings/serviceaccounts/adminsdk)");
 			getLogger().info("4. Told Ultimates/config.yml about your Firebase URL and key location.");
-			getPluginLoader().disablePlugin(this);
 		}
 	}
 	

@@ -3,7 +3,6 @@ package com.knoban.ultimates.cards;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -114,7 +114,7 @@ public abstract class Card implements Listener {
         }
         im.setLore(lore);
         im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS,
-                ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE);
+                ItemFlag.HIDE_ITEM_SPECIFICS, ItemFlag.HIDE_UNBREAKABLE);
         unownedCantBuyIcon.setItemMeta(im);
 
         // Unowned Can Buy ItemStack

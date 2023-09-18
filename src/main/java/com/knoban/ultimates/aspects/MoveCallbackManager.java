@@ -1,11 +1,9 @@
 package com.knoban.ultimates.aspects;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.events.CombatEnterEvent;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -144,7 +142,6 @@ public class MoveCallbackManager implements Listener {
 				continue;
 			}
 			
-			callback.timing.startTiming();
 			try {
 				if(isTeleport) {
 					callback.getCallback().onTeleport(event.getPlayer(), (PlayerTeleportEvent) event);
@@ -154,7 +151,6 @@ public class MoveCallbackManager implements Listener {
 			} catch (Throwable t) {
 				plugin.getLogger().log(Level.SEVERE, "Error handling callback in " + getClass().getSimpleName(), t);
 			}
-			callback.timing.stopTiming();
 			if(callback.isOnlyCallOnce()) {
 				tryUnregister(event.getPlayer(), callback);
 			}
@@ -182,13 +178,11 @@ public class MoveCallbackManager implements Listener {
 				continue;
 			}
 			
-			callback.timing.startTiming();
 			try {
 				callback.getCallback().onCombat(event.getPlayer());
 			} catch (Throwable t) {
 				plugin.getLogger().log(Level.SEVERE, "Error handling callback in " + getClass().getSimpleName(), t);
 			}
-			callback.timing.stopTiming();
 			if(callback.isOnlyCallOnce()) {
 				tryUnregister(event.getPlayer(), callback);
 			}
@@ -210,13 +204,11 @@ public class MoveCallbackManager implements Listener {
 				continue; //callbacks can unregister each other
 			}
 			
-			callback.timing.startTiming();
 			try {
 				callback.getCallback().onDeath(event.getEntity());
 			} catch (Throwable t) {
 				plugin.getLogger().log(Level.SEVERE, "Error handling callback in " + getClass().getSimpleName(), t);
 			}
-			callback.timing.stopTiming();
 			tryUnregister(event.getEntity(), callback);
 		}
 		
@@ -244,13 +236,11 @@ public class MoveCallbackManager implements Listener {
 				continue; //callbacks can unregister each other
 			}
 			
-			callback.timing.startTiming();
 			try {
 				callback.getCallback().onQuit(event.getPlayer());
 			} catch (Throwable t) {
 				plugin.getLogger().log(Level.SEVERE, "Error handling callback in " + getClass().getSimpleName(), t);
 			}
-			callback.timing.stopTiming();
 			tryUnregister(event.getPlayer(), callback);
 		}
 		
@@ -317,7 +307,6 @@ public class MoveCallbackManager implements Listener {
 		private final boolean onlyCallOnce;
 		private final boolean allowMovementY;
 		private final boolean allowCombat;
-		final Timing timing;
 		boolean active = true;
 		
 		RegisteredCallback(JavaPlugin plugin, Callback callback,
@@ -326,8 +315,6 @@ public class MoveCallbackManager implements Listener {
 			this.onlyCallOnce = onlyCallOnce;
 			this.allowMovementY = allowMovementY;
 			this.allowCombat = allowCombat;
-			timing = Timings.of(plugin, MoveCallbackManager.class.getSimpleName()
-					+ " - " + callback.getClass().getName());
 		}
 		
 		public Callback getCallback() {

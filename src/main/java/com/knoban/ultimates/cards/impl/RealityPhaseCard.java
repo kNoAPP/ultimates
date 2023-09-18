@@ -1,7 +1,5 @@
 package com.knoban.ultimates.cards.impl;
 
-import co.aikar.timings.Timing;
-import co.aikar.timings.Timings;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -15,7 +13,7 @@ import com.knoban.ultimates.cards.CardInfo;
 import com.knoban.ultimates.events.PreAbilityTeleportEvent;
 import com.knoban.ultimates.primal.PrimalSource;
 import com.knoban.ultimates.primal.Tier;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -53,14 +51,12 @@ public class RealityPhaseCard extends Card implements ActionWarmupTaskTemplate.T
 			.expireAfterWrite(COOLDOWN_MILLIS, TimeUnit.MILLISECONDS).build();
 	private final ItemStack activationItem;
 	private final WorldContainer worldContainer;
-	private final Timing timings;
 	private final ActionWarmupTaskTemplate warmupTemplate;
 	
 	public RealityPhaseCard(Ultimates plugin) {
 		super(plugin);
 		activationItem = createActivationItem();
 		worldContainer = new WorldContainer(plugin);
-		timings = Timings.of(plugin, getClass().getSimpleName() + "#getPostLoadDestination");
 		
 		warmupTemplate = ActionWarmupTaskTemplate.createMinTimed(WARMUP_SECONDS * 20,
 				task -> task.getCompanion(Companion.class).chunk != null)
@@ -255,7 +251,6 @@ public class RealityPhaseCard extends Card implements ActionWarmupTaskTemplate.T
 	}
 	
 	private Location getPostLoadDestination(Location originalDestination) {
-		timings.startTiming();
 		try {
 			for(Block block : getBlockIterator(originalDestination)) {
 				if(isSafeGround(block.getRelative(0, -1, 0)) && isSafeAir(block) && isSafeAir(block.getRelative(0, 1, 0))) {
@@ -267,7 +262,7 @@ public class RealityPhaseCard extends Card implements ActionWarmupTaskTemplate.T
 			}
 			return null;
 		} finally {
-			timings.stopTiming();
+
 		}
 	}
 	

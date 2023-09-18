@@ -3,7 +3,7 @@ package com.knoban.ultimates.aspects.warmup;
 import com.knoban.ultimates.Ultimates;
 import com.knoban.ultimates.aspects.MoveCallbackManager;
 import com.knoban.ultimates.cards.Card;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 

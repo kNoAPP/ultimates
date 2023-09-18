@@ -6,7 +6,7 @@ import com.knoban.ultimates.aspects.MoveCallbackManager;
 import com.knoban.ultimates.events.CardDiscardEvent;
 import com.knoban.ultimates.events.CombatEnterEvent;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
