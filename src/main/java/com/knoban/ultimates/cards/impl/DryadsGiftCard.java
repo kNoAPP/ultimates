@@ -43,7 +43,7 @@ public class DryadsGiftCard extends Card {
 
         if(drawn.contains(p) && p.getGameMode() != GameMode.CREATIVE && WOODS.contains(e.getBlock().getType())
                 && !e.getBlock().hasMetadata("is-placed")) {
-            if(RANDOM.nextInt(100) <= 10) {
+            if(RANDOM.nextInt(10) <= 3) {
                 e.setExpToDrop(RANDOM.nextInt(4) + 1);
             }
         }
