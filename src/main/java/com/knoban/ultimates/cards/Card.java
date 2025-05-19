@@ -147,7 +147,7 @@ public abstract class Card implements Listener {
         // Equipped ItemStack
         drawnIcon = unownedCantBuyIcon.clone();
         im = drawnIcon.getItemMeta();
-        im.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+        im.addEnchant(Enchantment.INFINITY, 1, true);
         lore = im.getLore();
         lore.set(0, "§d§oDrawn");
         im.setLore(lore);

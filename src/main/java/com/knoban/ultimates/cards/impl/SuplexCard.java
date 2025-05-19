@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -24,7 +25,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
 @CardInfo(
         material = Material.RABBIT_FOOT,
@@ -83,11 +83,11 @@ public class SuplexCard extends Card {
                         s.setCollidable(false);
                         s.setWander(false);
                         s.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1000000, 0, true, false, false));
-                        s.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 1000000, 100, true, false, false));
+                        s.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 1000000, 100, true, false, false));
                         s.setMetadata(METADATA, new FixedMetadataValue(plugin, true));
                         s.addPassenger(pse.getSuplexee());
                         p.addPassenger(s);
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1000000, 1, true));
+                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 1000000, 1, true));
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class SuplexCard extends Card {
                     }
                 }
             }.runTaskTimer(plugin, 2L, 2L);
-            p.removePotionEffect(PotionEffectType.SLOW);
+            p.removePotionEffect(PotionEffectType.SLOWNESS);
         }
     }
 
@@ -129,7 +129,7 @@ public class SuplexCard extends Card {
                 return;
             }
 
-            p.removePotionEffect(PotionEffectType.SLOW);
+            p.removePotionEffect(PotionEffectType.SLOWNESS);
             mount.remove();
         }
     }

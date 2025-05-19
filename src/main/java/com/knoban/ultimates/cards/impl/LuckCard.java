@@ -28,7 +28,7 @@ public class LuckCard extends Card {
     public boolean draw(Player p) {
         boolean didEquip = super.draw(p);
         if(didEquip) {
-            p.getAttribute(Attribute.GENERIC_LUCK).setBaseValue(15);
+            p.getAttribute(Attribute.LUCK).setBaseValue(15);
         }
         return didEquip;
     }
@@ -37,7 +37,7 @@ public class LuckCard extends Card {
     public boolean discard(Player p) {
         boolean didDiscard = super.discard(p);
         if(didDiscard) {
-            p.getAttribute(Attribute.GENERIC_LUCK).setBaseValue(p.getAttribute(Attribute.GENERIC_LUCK).getDefaultValue());
+            p.getAttribute(Attribute.LUCK).setBaseValue(p.getAttribute(Attribute.LUCK).getDefaultValue());
         }
         return didDiscard;
     }

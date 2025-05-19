@@ -28,7 +28,7 @@ public class TankCard extends Card {
     public boolean draw(Player p) {
         boolean didEquip = super.draw(p);
         if(didEquip) {
-            AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            AttributeInstance maxHealth = p.getAttribute(Attribute.MAX_HEALTH);
             if(maxHealth != null)
                 maxHealth.setBaseValue(maxHealth.getDefaultValue() + 6);
         }
@@ -39,7 +39,7 @@ public class TankCard extends Card {
     public boolean discard(Player p) {
         boolean didDispose = super.discard(p);
         if(didDispose) {
-            AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            AttributeInstance maxHealth = p.getAttribute(Attribute.MAX_HEALTH);
             if(maxHealth != null)
                 maxHealth.setBaseValue(maxHealth.getDefaultValue());
         }

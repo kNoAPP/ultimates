@@ -88,7 +88,7 @@ public class RecallCommandHandle implements Listener {
 					double tl = 8 - ((double)t/20);
 					
 					p.sendActionBar(Tools.generateWaitBar((double) t / (20.0 * 8.0), 20, ChatColor.GOLD, '☕', ChatColor.GRAY, '☕').append(Component.text(" " + ChatColor.GREEN + Tools.round(tl, 1) + "s")));
-					p.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, p.getLocation().clone().add(0, 0.5, 0), 1, 0.3F, 0.1F, 0.3F, 0.01);
+					p.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, p.getLocation().clone().add(0, 0.5, 0), 1, 0.3F, 0.1F, 0.3F, 0.01);
 					if(t%20 == 0) {
 						p.playSound(p.getLocation(), Sound.BLOCK_TRIPWIRE_CLICK_ON, 1F, 1F);
 					}
@@ -118,7 +118,7 @@ public class RecallCommandHandle implements Listener {
 			    				double z = r*Math.sin(theta)*Math.sin(phi);
 			    			
 			    				l.add(x,y,z);
-			    				p.getWorld().spawnParticle(Particle.DRIP_WATER, l, 1, 0F, 0F, 0F, 0.001);
+			    				p.getWorld().spawnParticle(Particle.DRIPPING_WATER, l, 1, 0F, 0F, 0F, 0.001);
 			    				l.subtract(x, y, z);
 			    			}
 						}

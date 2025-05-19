@@ -135,7 +135,7 @@ public class Levitation {
 								hitEntities.add(tle);
 
 							tle.damage(e.getVelocity().clone().length() * 2.5);
-							tle.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, tle.getLocation().clone().add(0, 0.8, 0), 1, 0.2F, 0.2F, 0.2F, 0.01);
+							tle.getWorld().spawnParticle(Particle.EXPLOSION, tle.getLocation().clone().add(0, 0.8, 0), 1, 0.2F, 0.2F, 0.2F, 0.01);
 							tle.getWorld().playSound(tle.getLocation(), Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1F, 1F);
 							try {
 								tle.setVelocity(e.getVelocity().clone().normalize());

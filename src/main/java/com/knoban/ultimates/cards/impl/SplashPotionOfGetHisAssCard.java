@@ -62,23 +62,23 @@ public class SplashPotionOfGetHisAssCard extends Card {
     public void cacheItemStacks() {
         super.cacheItemStacks();
         PotionMeta im = (PotionMeta) unownedCantBuyIcon.getItemMeta();
-        im.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+        im.setBasePotionData(new PotionData(PotionType.HARMING));
         unownedCantBuyIcon.setItemMeta(im);
 
         im = (PotionMeta) unownedCanBuyIcon.getItemMeta();
-        im.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+        im.setBasePotionData(new PotionData(PotionType.HARMING));
         unownedCanBuyIcon.setItemMeta(im);
 
         im = (PotionMeta) unownedIcon.getItemMeta();
-        im.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+        im.setBasePotionData(new PotionData(PotionType.HARMING));
         unownedIcon.setItemMeta(im);
 
         im = (PotionMeta) ownedIcon.getItemMeta();
-        im.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+        im.setBasePotionData(new PotionData(PotionType.HARMING));
         ownedIcon.setItemMeta(im);
 
         im = (PotionMeta) drawnIcon.getItemMeta();
-        im.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+        im.setBasePotionData(new PotionData(PotionType.HARMING));
         drawnIcon.setItemMeta(im);
     }
 
@@ -203,7 +203,7 @@ public class SplashPotionOfGetHisAssCard extends Card {
                             aggro.setTarget(target);
                             aggro.damage(0, target);
                             aggro.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 5, true, false));
-                            aggro.getWorld().spawnParticle(Particle.VILLAGER_ANGRY, aggro.getLocation().clone().add(0, 2.2, 0),
+                            aggro.getWorld().spawnParticle(Particle.ANGRY_VILLAGER, aggro.getLocation().clone().add(0, 2.2, 0),
                                     1, 0F, 0F, 0F, 0.01);
                             aggro.setMetadata(METADATA_ENTITY, new FixedMetadataValue(plugin, target));
                             aggro.setMetadata(METADATA_ENTITY_EXPR, new FixedMetadataValue(plugin, System.currentTimeMillis() + REMAIN_AGGROED_FOR_MILLIS));
@@ -256,7 +256,7 @@ public class SplashPotionOfGetHisAssCard extends Card {
     private static ItemStack getPotionItem() {
         ItemStack is = new ItemStack(Material.SPLASH_POTION);
         PotionMeta im = (PotionMeta) is.getItemMeta();
-        im.setBasePotionData(new PotionData(PotionType.INSTANT_DAMAGE));
+        im.setBasePotionData(new PotionData(PotionType.HARMING));
         im.setDisplayName(ChatColor.LIGHT_PURPLE + "Splash Potion of Get His Ass");
         List<String> lores = new ArrayList<>();
         lores.add(LOCKED_METADATA_LORE);

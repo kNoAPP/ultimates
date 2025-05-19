@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Setup JDK 17
-      uses: actions/setup-java@v2
+    - name: Setup JDK 21
+      uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'adopt'
     - name: Cache local Maven repository
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       id: cache
       with:
         path: |
@@ -28,21 +28,21 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
-        repository: kNoAPP/Atlas
-        path: Atlas
+        repository: kNoAPP/atlas
+        path: atlas
     - name: Clone Ultimates
       uses: actions/checkout@v2
       with:
-        repository: kNoAPP/Ultimates
-        path: Ultimates
+        repository: kNoAPP/ultimates
+        path: ultimates
     - name: Build Atlas
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-          cd Atlas
+          cd atlas
           mvn --batch-mode --update-snapshots install
     - name: Build Ultimates
       run: |
-          cd Ultimates
+          cd ultimates
           mvn --batch-mode --update-snapshots verify
     - name: Restart server
       run: |
@@ -54,7 +54,7 @@ jobs:
           -d '{"signal": "restart"}'
     - name: Upload Ultimates
       run: |
-          cd Ultimates
+          cd ultimates
           VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
           echo $VERSION
           mv ./target/ultimates-$VERSION.jar ./target/Ultimates.jar

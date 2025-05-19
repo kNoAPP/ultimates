@@ -70,7 +70,7 @@ public class Items {
 		lores.add(ChatColor.RED + "Requires 30 levels to craft.");
 		lores.add(ChatColor.GRAY + "Get your items back after death.");
 		im.setLore(lores);
-		im.addEnchant(Enchantment.ARROW_INFINITE, 1, true);
+		im.addEnchant(Enchantment.INFINITY, 1, true);
 		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		is.setItemMeta(im);
 		return is;

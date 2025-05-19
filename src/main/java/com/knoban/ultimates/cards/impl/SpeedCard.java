@@ -29,7 +29,7 @@ public class SpeedCard extends PermanentPotionEffectCard {
 	@Override
 	public void cacheItemStacks() {
 		super.cacheItemStacks();
-		PotionData data = new PotionData(PotionType.SPEED);
+		PotionData data = new PotionData(PotionType.SWIFTNESS);
 		
 		PotionMeta meta = (PotionMeta) unownedCantBuyIcon.getItemMeta();
 		meta.setBasePotionData(data);

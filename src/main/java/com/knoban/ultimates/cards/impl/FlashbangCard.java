@@ -55,7 +55,7 @@ public class FlashbangCard extends Card {
     public void onEggLand(ProjectileHitEvent e) {
         Projectile proj = e.getEntity();
         if(proj.hasMetadata(METADATA)) {
-            proj.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, proj.getLocation(), 1,
+            proj.getWorld().spawnParticle(Particle.EXPLOSION, proj.getLocation(), 1,
                     0F, 0F, 0F, 0.01);
             proj.getWorld().playSound(proj.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1F, 1F);
             Entity hit = e.getHitEntity();
@@ -71,7 +71,7 @@ public class FlashbangCard extends Card {
             } else if(hit instanceof Player) {
                 Player t = (Player) hit;
                 t.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 0));
-                t.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 120, 0));
+                t.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 120, 0));
             }
         }
     }

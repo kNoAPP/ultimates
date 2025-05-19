@@ -32,7 +32,7 @@ public class OOCRegenerationCard extends PermanentPotionEffectCard {
 	@Override
 	public void cacheItemStacks() {
 		super.cacheItemStacks();
-		PotionData data = new PotionData(PotionType.REGEN);
+		PotionData data = new PotionData(PotionType.REGENERATION);
 		
 		PotionMeta meta = (PotionMeta) unownedCantBuyIcon.getItemMeta();
 		meta.setBasePotionData(data);

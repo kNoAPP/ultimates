@@ -124,7 +124,7 @@ public class GeneralListener implements Listener {
 							p.sendMessage(Message.RESPAWN.getMessage("Respawn Token active!"));
 							p.sendMessage(Message.RESPAWN.getMessage("You have " + store.getFreeRespawns() + " respawn(s) left!"));
 							p.getWorld().playSound(p.getLocation(), Sound.ITEM_TOTEM_USE, 2F, 0.8F);
-							p.getWorld().spawnParticle(Particle.TOTEM, p.getLocation().clone().add(0, 0.5, 0), 30, 0.5F, 0.5F, 0.5F, 1);
+							p.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, p.getLocation().clone().add(0, 0.5, 0), 30, 0.5F, 0.5F, 0.5F, 1);
 						} else {
 							p.sendMessage(Message.RESPAWN.getMessage("This requires 30 levels of xp!"));
 							p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_HURT, 1F, 1F);
